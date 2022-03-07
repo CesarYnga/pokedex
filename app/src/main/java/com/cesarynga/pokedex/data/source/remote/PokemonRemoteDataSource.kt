@@ -1,4 +1,4 @@
-package com.cesarynga.pokedex.data.source
+package com.cesarynga.pokedex.data.source.remote
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -7,7 +7,7 @@ class PokemonRemoteDataSource(
     private val pokemonApi: PokemonApi
 ) {
     fun pokemonList(page: Int): Flow<List<PokemonEntity>> = flow {
-        val pokemons = pokemonApi.pokemonList(
+        pokemonApi.pokemonList(
             limit = PAGE_SIZE,
             offset = page * PAGE_SIZE
         )

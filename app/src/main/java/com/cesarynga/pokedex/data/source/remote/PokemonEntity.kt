@@ -1,4 +1,4 @@
-package com.cesarynga.pokedex.data.source
+package com.cesarynga.pokedex.data.source.remote
 
 data class PokemonEntity(
     val name: String,
