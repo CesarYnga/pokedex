@@ -1,10 +1,11 @@
 package com.cesarynga.pokedex.data.source.remote
 
+import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
@@ -28,7 +29,7 @@ class PokemonRemoteDataSourceTest {
             .build()
             .create(PokemonApi::class.java)
 
-        pokemonRemoteDataSource = PokemonRemoteDataSource(pokemonApi)
+        pokemonRemoteDataSource = PokemonRemoteDataSource(pokemonApi, Dispatchers.Main)
     }
 
     @After
@@ -37,7 +38,7 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun pokemonList_fetchFirstPage_returnSuccess() = runBlocking {
+    fun `Given first page is requested, When no errors occurs, Then Pokemon list is received`() = runBlocking {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-first-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())
@@ -48,17 +49,17 @@ class PokemonRemoteDataSourceTest {
                 .setBody(json)
         )
 
-        val response = pokemonApi.pokemonList()
+        val response = pokemonApi.getPokemonList()
 
-        assertEquals(response.count, POKEMON_LIST_COUNT)
-        assertNotNull(response.next)
-        assertEquals(response.next, "https://pokeapi.co/api/v2/pokemon?offset=20&limit=20")
-        assertNull(response.previous)
-        assertEquals(response.results.size, POKEMON_LIST_SIZE)
+        assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
+        assertThat(response.next).isNotNull()
+        assertThat(response.next).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=20&limit=20")
+        assertThat(response.previous).isNull()
+        assertThat(response.results.size).isEqualTo(POKEMON_LIST_SIZE)
     }
 
     @Test
-    fun pokemonList_fetchMiddlePage_returnSuccess() = runBlocking {
+    fun `Given middle page is requested, When no errors occurs, Then Pokemon list is received`() = runBlocking {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-middle-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())
@@ -69,18 +70,18 @@ class PokemonRemoteDataSourceTest {
                 .setBody(json)
         )
 
-        val response = pokemonApi.pokemonList()
+        val response = pokemonApi.getPokemonList()
 
-        assertEquals(response.count, POKEMON_LIST_COUNT)
-        assertNotNull(response.next)
-        assertEquals(response.next, "https://pokeapi.co/api/v2/pokemon?offset=100&limit=20")
-        assertNotNull(response.previous)
-        assertEquals(response.previous, "https://pokeapi.co/api/v2/pokemon?offset=60&limit=20")
-        assertEquals(response.results.size, POKEMON_LIST_SIZE)
+        assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
+        assertThat(response.next).isNotNull()
+        assertThat(response.next).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=100&limit=20")
+        assertThat(response.previous).isNotNull()
+        assertThat(response.previous).isEqualTo( "https://pokeapi.co/api/v2/pokemon?offset=60&limit=20")
+        assertThat(response.results.size).isEqualTo(POKEMON_LIST_SIZE)
     }
 
     @Test
-    fun pokemonList_fetchLastPage_returnSuccess() = runBlocking {
+    fun `Given last page is requested, When no errors occurs, Then Pokemon list is received`() = runBlocking {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-last-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())
@@ -91,13 +92,13 @@ class PokemonRemoteDataSourceTest {
                 .setBody(json)
         )
 
-        val response = pokemonApi.pokemonList()
+        val response = pokemonApi.getPokemonList()
 
-        assertEquals(response.count, POKEMON_LIST_COUNT)
-        assertNull(response.next)
-        assertNotNull(response.previous)
-        assertEquals(response.previous, "https://pokeapi.co/api/v2/pokemon?offset=1100&limit=20")
-        assertEquals(response.results.size, 6)
+        assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
+        assertThat(response.next).isNull()
+        assertThat(response.previous).isNotNull()
+        assertThat(response.previous).isEqualTo( "https://pokeapi.co/api/v2/pokemon?offset=1100&limit=20")
+        assertThat(response.results.size).isEqualTo( 6)
     }
 
     companion object {

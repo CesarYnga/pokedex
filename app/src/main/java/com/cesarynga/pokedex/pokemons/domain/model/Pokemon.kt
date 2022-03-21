@@ -1,4 +1,4 @@
-package com.cesarynga.pokedex.pokemons.domain
+package com.cesarynga.pokedex.pokemons.domain.model
 
 data class Pokemon(
     val id: Int,
