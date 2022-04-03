@@ -8,8 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cesarynga.pokedex.pokemons.PokemonDetails
 import com.cesarynga.pokedex.pokemons.PokemonList
+import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -17,7 +19,12 @@ class MainActivity : ComponentActivity() {
 
             NavHost(navController = navController, startDestination = "pokemonList") {
                 composable("pokemonList") { PokemonList(navController = navController) }
-                composable("pokemonDetails") { PokemonDetails(navController = navController) }
+                composable("pokemonDetails") {
+                    val pokemon = navController.previousBackStackEntry?.savedStateHandle?.get<Pokemon>("pokemon")
+                    pokemon?.let {
+                        PokemonDetails(navController = navController, it)
+                    }
+                }
             }
         }
     }

@@ -15,7 +15,7 @@ class PokemonRemoteDataSource(
     override fun getPokemonList(page: Int): Flow<List<PokemonEntity>> = flow {
         val pokemonList = pokemonApi.getPokemonList(
             limit = PAGE_SIZE,
-            offset = page * PAGE_SIZE
+            offset = (page - 1) * PAGE_SIZE
         ).results
         emit(pokemonList)
     }.flowOn(ioDispatcher)

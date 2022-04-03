@@ -1,5 +1,6 @@
 package com.cesarynga.pokedex.data
 
+import com.cesarynga.pokedex.data.source.FakePokemonDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonEntity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.catch
@@ -26,7 +27,7 @@ class PokemonRepositoryImplTest {
     }
 
     @Test
-    fun `Given Pokemon list is requested from remote data source, When no errors occurs, Then Pokemon list is received`() =
+    fun `Given remote data source is available, when pokemon list is requested, then repository should return remote pokemon list`() =
         runBlocking {
 
             val pokemons = pokemonRepository.getPokemonList(20).first()
@@ -35,7 +36,7 @@ class PokemonRepositoryImplTest {
         }
 
     @Test
-    fun `Given Pokemon list is requested from remote data source, When remote data source is unavailable, Then error is thrown`() = runBlocking {
+    fun `Given remote data source is unavailable, when pokemon list is requested, then an error is thrown`() = runBlocking {
         // Make remote data source unavailable
         pokemonRemoteDataSource.pokemonList = null
 
