@@ -1,16 +1,19 @@
 package com.cesarynga.pokedex.data
 
+import com.cesarynga.pokedex.MainCoroutineRule
 import com.cesarynga.pokedex.data.source.FakePokemonDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonEntity
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import java.lang.Exception
 
+@ExperimentalCoroutinesApi
 class PokemonRepositoryImplTest {
 
     private lateinit var pokemonRepository: PokemonRepository
@@ -20,6 +23,9 @@ class PokemonRepositoryImplTest {
     private val pokemon3 = PokemonEntity("pokemon3", "url3")
     private val remotePokemons = listOf(pokemon1, pokemon2, pokemon3)
 
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
+
     @Before
     fun setUp() {
         pokemonRemoteDataSource = FakePokemonDataSource(remotePokemons)
@@ -28,7 +34,7 @@ class PokemonRepositoryImplTest {
 
     @Test
     fun `Given remote data source is available, when pokemon list is requested, then repository should return remote pokemon list`() =
-        runBlocking {
+        runTest {
 
             val pokemons = pokemonRepository.getPokemonList(20).first()
 
@@ -36,14 +42,15 @@ class PokemonRepositoryImplTest {
         }
 
     @Test
-    fun `Given remote data source is unavailable, when pokemon list is requested, then an error is thrown`() = runBlocking {
-        // Make remote data source unavailable
-        pokemonRemoteDataSource.pokemonList = null
+    fun `Given remote data source is unavailable, when pokemon list is requested, then an error is thrown`() =
+        runTest {
+            // Make remote data source unavailable
+            pokemonRemoteDataSource.pokemonList = null
 
-        pokemonRepository.getPokemonList(20).catch {
-            // Result should be an exception
-            assertThat(it).isInstanceOf(Exception::class.java)
-            assertThat(it.message).isEqualTo("Pokemons not found")
-        }.collect()
-    }
+            pokemonRepository.getPokemonList(20).catch {
+                // Result should be an exception
+                assertThat(it).isInstanceOf(Exception::class.java)
+                assertThat(it.message).isEqualTo("Pokemons not found")
+            }.collect()
+        }
 }

@@ -1,16 +1,19 @@
 package com.cesarynga.pokedex.pokemons.domain.usecase
 
+import com.cesarynga.pokedex.MainCoroutineRule
 import com.cesarynga.pokedex.data.FakePokemonRepository
 import com.cesarynga.pokedex.data.source.remote.PokemonEntity
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import java.lang.Exception
 
+@ExperimentalCoroutinesApi
 class GetPokemonListUseCaseTest {
 
     private lateinit var getPokemonListUseCase: GetPokemonListUseCase
@@ -20,6 +23,9 @@ class GetPokemonListUseCaseTest {
     private val pokemon3 = PokemonEntity("pokemon3", "https://pokeapi.co/api/v2/pokemon/3/")
     private val pokemonEntityList = listOf(pokemon1, pokemon2, pokemon3)
 
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
+
     @Before
     fun setUp() {
         fakePokemonRepository = FakePokemonRepository(pokemonEntityList)
@@ -27,7 +33,7 @@ class GetPokemonListUseCaseTest {
     }
 
     @Test
-    fun `Given a non empty pokemon repository, when calling pokemon list use case, then the result is mapping correctly`() = runBlocking {
+    fun `Given a non empty pokemon repository, when calling pokemon list use case, then the result is mapping correctly`() = runTest {
         val pokemonList = getPokemonListUseCase(20).first()
 
         assertThat(pokemonList).isNotNull()
@@ -40,7 +46,7 @@ class GetPokemonListUseCaseTest {
     }
 
     @Test
-    fun `Given a empty pokemon repository, when calling pokemon list use case, then the result empty`() = runBlocking {
+    fun `Given a empty pokemon repository, when calling pokemon list use case, then the result empty`() = runTest {
         fakePokemonRepository.pokemonList = emptyList()
 
         val pokemonList = getPokemonListUseCase(20).first()
@@ -50,7 +56,7 @@ class GetPokemonListUseCaseTest {
     }
 
     @Test
-    fun `Given a unavailable repository, when calling pokemon list use case, then an error is thrown`() = runBlocking {
+    fun `Given a unavailable repository, when calling pokemon list use case, then an error is thrown`() = runTest {
         fakePokemonRepository.pokemonList = null
 
         getPokemonListUseCase(20).catch {
