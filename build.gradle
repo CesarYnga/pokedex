@@ -1,15 +1,13 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+import com.cesarynga.pokedex.buildsrc.Libs
+
 buildscript {
-    ext {
-        compose_version = '1.1.1'
-    }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
+        classpath Libs.androidGradlePlugin
+        classpath Libs.Kotlin.gradlePlugin
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
