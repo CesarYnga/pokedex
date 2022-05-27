@@ -1,5 +1,7 @@
 package com.cesarynga.pokedex.data.source.remote
 
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import java.lang.Exception
 
@@ -20,7 +22,7 @@ data class PokemonEntity(
         }
         return Pokemon(
             id = id,
-            name = name,
+            name = name.capitalize(Locale.current),
             imageUrl = imageUrl
         )
     }
