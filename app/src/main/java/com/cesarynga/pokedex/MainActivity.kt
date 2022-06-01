@@ -7,7 +7,7 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.cesarynga.pokedex.pokemons.PokemonDetails
+import com.cesarynga.pokedex.pokemondetails.PokemonDetails
 import com.cesarynga.pokedex.pokemons.PokemonList
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 
