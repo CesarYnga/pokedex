@@ -6,68 +6,76 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.text.htmlEncode
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.cesarynga.pokedex.R
+import com.cesarynga.pokedex.navigation.AppScreen
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import com.cesarynga.pokedex.ui.theme.PokedexTheme
 import com.cesarynga.pokedex.util.DominantColors
 import com.cesarynga.pokedex.util.rememberDominantColorState
+import okio.ByteString.Companion.encodeUtf8
 import org.koin.androidx.compose.getViewModel
+import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonList(navController: NavController, viewModel: PokemonListViewModel = getViewModel()) {
-    PokedexTheme(darkTheme = false) {
-        Box(
-            Modifier
-                .background(MaterialTheme.colorScheme.primary)
-                .systemBarsPadding()
-        ) {
-            Scaffold(
-                topBar = {
-                    SmallTopAppBar(
-                        title = { Text(text = stringResource(id = R.string.app_name)) },
-                        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
+    Box(
+        Modifier
+            .background(MaterialTheme.colorScheme.primary)
+            .systemBarsPadding()
+    ) {
+        Scaffold(
+            topBar = {
+                SmallTopAppBar(
+                    title = { Text(text = stringResource(id = R.string.app_name)) },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
+                )
+            },
+        ) { contentPadding ->
+            when (val uiState = viewModel.uiState.collectAsState().value) {
+                is PokemonListUiState.Success -> {
+                    PokemonList(
+                        navController = navController,
+                        modifier = Modifier.padding(contentPadding),
+                        uiState.pokemonList
                     )
-                },
-            ) { contentPadding ->
-                when (val uiState = viewModel.uiState.collectAsState().value) {
-                    is PokemonListUiState.Success -> {
-                        PokemonList(
-                            navController = navController,
-                            modifier = Modifier.padding(contentPadding),
-                            uiState.pokemonList
-                        )
+                }
+                is PokemonListUiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
-                    is PokemonListUiState.Loading -> {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                        }
-                    }
-                    is PokemonListUiState.Error -> {
-                        Toast.makeText(
-                            LocalContext.current,
-                            uiState.exception.localizedMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                }
+                is PokemonListUiState.Error -> {
+                    Toast.makeText(
+                        LocalContext.current,
+                        uiState.exception.localizedMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -76,20 +84,17 @@ fun PokemonList(navController: NavController, viewModel: PokemonListViewModel = 
 
 @Composable
 fun PokemonList(navController: NavController, modifier: Modifier, pokemonList: List<Pokemon>) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 160.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    LazyColumn(
         contentPadding = PaddingValues(16.dp),
         modifier = modifier,
     ) {
         items(pokemonList) { pokemon ->
+
             PokemonListItem(pokemon = pokemon, navController = navController)
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListItem(pokemon: Pokemon, navController: NavController) {
     Log.i("PokemonListItem", "compose ${pokemon.name}")
@@ -100,38 +105,62 @@ fun PokemonListItem(pokemon: Pokemon, navController: NavController) {
     )
 
     LaunchedEffect(cardColorState.dominantColors) {
+        Log.d("PokemonListItem", "${pokemon.name} requires dominant color calculation")
         cardColorState.updateDominantColor(pokemon.imageUrl)
     }
 
-    ElevatedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = animateColorAsState(
-                cardColorState.dominantColors.color,
-                spring(stiffness = Spring.StiffnessLow)
-            ).value,
-            contentColor = animateColorAsState(
-                cardColorState.dominantColors.onColor,
-                spring(stiffness = Spring.StiffnessLow)
-            ).value
-        ),
-        modifier = Modifier.fillMaxSize(),
-        onClick = {
-            navController.currentBackStackEntry?.savedStateHandle?.set("pokemon", pokemon)
-            navController.navigate("pokemonDetails")
-        }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(5f / 2f)
     ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.BottomCenter)
+                .padding(top = 32.dp)
+                .shadow(8.dp, RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
+                .background(cardColorState.dominantColors.color)
+                .clickable {
+                    navController.navigate(
+                        AppScreen.PokemonDetailsScreen.route + "/${pokemon.id}" + "/${pokemon.name}" + "/${
+                            URLEncoder.encode(
+                                pokemon.imageUrl,
+                                Charsets.UTF_8.toString()
+                            )
+                        }"
+                    )
+                }
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(pokemon.imageUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = pokemon.name
-            )
-            Text(text = pokemon.name, modifier = Modifier.align(Alignment.CenterHorizontally))
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = String.format("#%03d", pokemon.id),
+                    color = cardColorState.dominantColors.onColor.copy(0.6f),
+                )
+                Text(
+                    text = pokemon.name,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = cardColorState.dominantColors.onColor
+                )
+            }
         }
+        AsyncImage(
+            modifier = Modifier
+                .aspectRatio(1f)
+                .align(Alignment.TopEnd),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(pokemon.imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = pokemon.name
+        )
     }
 }
 

@@ -15,8 +15,10 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
     private val _uiState = MutableStateFlow<PokemonListUiState>(PokemonListUiState.Success(emptyList()))
     val uiState: StateFlow<PokemonListUiState> = _uiState
 
+    private var currentPage = 1
+
     init {
-        getPokemonList(1)
+        getPokemonList(currentPage)
     }
 
     fun getPokemonList(page: Int) {
