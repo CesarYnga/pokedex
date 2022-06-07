@@ -12,12 +12,12 @@ class PokemonRemoteDataSource(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PokemonDataSource {
 
-    override fun getPokemonList(page: Int): Flow<List<PokemonEntity>> = flow {
-        val pokemonList = pokemonApi.getPokemonList(
+    override fun getPokemonList(page: Int): Flow<PokemonPageResponse> = flow {
+        val pokemonPage = pokemonApi.getPokemonList(
             limit = PAGE_SIZE,
             offset = (page - 1) * PAGE_SIZE
-        ).results
-        emit(pokemonList)
+        )
+        emit(pokemonPage)
     }.flowOn(ioDispatcher)
 
     companion object {

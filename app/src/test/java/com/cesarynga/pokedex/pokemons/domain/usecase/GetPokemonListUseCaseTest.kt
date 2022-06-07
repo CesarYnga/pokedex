@@ -2,7 +2,7 @@ package com.cesarynga.pokedex.pokemons.domain.usecase
 
 import com.cesarynga.pokedex.MainCoroutineRule
 import com.cesarynga.pokedex.data.FakePokemonRepository
-import com.cesarynga.pokedex.data.source.remote.PokemonEntity
+import com.cesarynga.pokedex.data.source.remote.PokemonResponse
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
@@ -18,9 +18,9 @@ class GetPokemonListUseCaseTest {
 
     private lateinit var getPokemonListUseCase: GetPokemonListUseCase
     private lateinit var fakePokemonRepository: FakePokemonRepository
-    private val pokemon1 = PokemonEntity("pokemon1", "https://pokeapi.co/api/v2/pokemon/1/")
-    private val pokemon2 = PokemonEntity("pokemon2", "https://pokeapi.co/api/v2/pokemon/2/")
-    private val pokemon3 = PokemonEntity("pokemon3", "https://pokeapi.co/api/v2/pokemon/3/")
+    private val pokemon1 = PokemonResponse("pokemon1", "https://pokeapi.co/api/v2/pokemon/1/")
+    private val pokemon2 = PokemonResponse("pokemon2", "https://pokeapi.co/api/v2/pokemon/2/")
+    private val pokemon3 = PokemonResponse("pokemon3", "https://pokeapi.co/api/v2/pokemon/3/")
     private val pokemonEntityList = listOf(pokemon1, pokemon2, pokemon3)
 
     @get:Rule

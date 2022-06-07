@@ -89,8 +89,8 @@ class DominantColorState(
     ): Palette.Swatch? {
         val request = ImageRequest.Builder(context)
             .data(imageUrl)
-            // We scale the image to cover 128px x 128px (i.e. min dimension == 128px)
-            .size(128)
+            // We scale the image to cover 48px x 48px (i.e. min dimension == 48px)
+            .size(48)
             .scale(Scale.FILL)
             // Disable hardware bitmaps, since Palette uses Bitmap.getPixels()
             .allowHardware(false)
@@ -108,8 +108,8 @@ class DominantColorState(
                     // Disable any bitmap resizing in Palette. We've already loaded an appropriately
                     // sized bitmap through Coil
                     .resizeBitmapArea(0)
-                    // We reduce the maximum color count down to 10
-                    .maximumColorCount(10)
+                    // We reduce the maximum color count down to 16
+                    .maximumColorCount(16)
                     .generate()
                 palette.dominantSwatch
             }

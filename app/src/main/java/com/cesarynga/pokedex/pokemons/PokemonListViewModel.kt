@@ -12,29 +12,52 @@ import kotlinx.coroutines.launch
 
 class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseCase) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<PokemonListUiState>(PokemonListUiState.Success(emptyList()))
+    private val _uiState = MutableStateFlow(PokemonListUiState())
     val uiState: StateFlow<PokemonListUiState> = _uiState
 
     private var currentPage = 1
+    private var loadNextPageEnabled = true
 
     init {
-        getPokemonList(currentPage)
+        getPokemonPage(currentPage)
     }
 
-    fun getPokemonList(page: Int) {
+    fun getPokemonPage(page: Int) {
         viewModelScope.launch {
             getPokemonListUseCase(page)
-                .onStart { _uiState.value = PokemonListUiState.Loading }
-                .catch { _uiState.value = PokemonListUiState.Error(it) }
+                .onStart { emitUiState(items = uiState.value.items, isLoading = true) }
+                .catch {
+                    loadNextPageEnabled = false
+                    emitUiState(items = uiState.value.items, userMessage = it.localizedMessage, isLoading = false)
+                }
                 .collect {
-                    _uiState.value = PokemonListUiState.Success(it)
+                    loadNextPageEnabled = true
+                    emitUiState(items = uiState.value.items + it.results, isLoading = false, hasEndReached = it.next == null)
                 }
         }
     }
+
+    fun getPokemonNextPage() {
+        if (loadNextPageEnabled) {
+            currentPage++
+        }
+        getPokemonPage(currentPage)
+    }
+
+    private fun emitUiState(
+        items: List<Pokemon> = emptyList(),
+        isLoading: Boolean = false,
+        hasEndReached: Boolean = false,
+        userMessage: String? = null
+    ) {
+        val uiState = PokemonListUiState(items, isLoading, hasEndReached, userMessage)
+        this._uiState.value = uiState
+    }
 }
 
-sealed class PokemonListUiState {
-    data class Success(val pokemonList: List<Pokemon>): PokemonListUiState()
-    data class Error(val exception: Throwable): PokemonListUiState()
-    object Loading: PokemonListUiState()
-}
+data class PokemonListUiState(
+    val items: List<Pokemon> = emptyList(),
+    val isLoading: Boolean = false,
+    val hasEndReached: Boolean = false,
+    val userMessage: String? = null
+)

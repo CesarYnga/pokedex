@@ -2,7 +2,7 @@ package com.cesarynga.pokedex.data
 
 import com.cesarynga.pokedex.MainCoroutineRule
 import com.cesarynga.pokedex.data.source.FakePokemonDataSource
-import com.cesarynga.pokedex.data.source.remote.PokemonEntity
+import com.cesarynga.pokedex.data.source.remote.PokemonResponse
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
@@ -18,9 +18,9 @@ class PokemonRepositoryImplTest {
 
     private lateinit var pokemonRepository: PokemonRepository
     private lateinit var pokemonRemoteDataSource: FakePokemonDataSource
-    private val pokemon1 = PokemonEntity("pokemon1", "url1")
-    private val pokemon2 = PokemonEntity("pokemon2", "url2")
-    private val pokemon3 = PokemonEntity("pokemon3", "url3")
+    private val pokemon1 = PokemonResponse("pokemon1", "url1")
+    private val pokemon2 = PokemonResponse("pokemon2", "url2")
+    private val pokemon3 = PokemonResponse("pokemon3", "url3")
     private val remotePokemons = listOf(pokemon1, pokemon2, pokemon3)
 
     @get:Rule

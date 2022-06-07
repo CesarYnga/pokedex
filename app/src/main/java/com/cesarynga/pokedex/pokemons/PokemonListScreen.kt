@@ -2,14 +2,11 @@ package com.cesarynga.pokedex.pokemons
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -57,41 +54,54 @@ fun PokemonList(navController: NavController, viewModel: PokemonListViewModel = 
                 )
             },
         ) { contentPadding ->
-            when (val uiState = viewModel.uiState.collectAsState().value) {
-                is PokemonListUiState.Success -> {
-                    PokemonList(
-                        navController = navController,
-                        modifier = Modifier.padding(contentPadding),
-                        uiState.pokemonList
-                    )
-                }
-                is PokemonListUiState.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
-                }
-                is PokemonListUiState.Error -> {
-                    Toast.makeText(
-                        LocalContext.current,
-                        uiState.exception.localizedMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+            PokemonList(
+                navController = navController,
+                modifier = Modifier.padding(contentPadding),
+                viewModel = viewModel
+            )
         }
     }
 }
 
 @Composable
-fun PokemonList(navController: NavController, modifier: Modifier, pokemonList: List<Pokemon>) {
-    LazyColumn(
-        contentPadding = PaddingValues(16.dp),
-        modifier = modifier,
-    ) {
-        items(pokemonList) { pokemon ->
+fun PokemonList(navController: NavController, modifier: Modifier, viewModel: PokemonListViewModel) {
 
-            PokemonListItem(pokemon = pokemon, navController = navController)
+    val uiState = viewModel.uiState.collectAsState().value
+
+    if (uiState.isLoading && uiState.items.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
+    }
+
+    if (uiState.items.isNotEmpty()) {
+        LazyColumn(
+            contentPadding = PaddingValues(16.dp),
+            modifier = modifier,
+        ) {
+            itemsIndexed(uiState.items) { index, pokemon ->
+                if (index >= uiState.items.size - 1 && !uiState.hasEndReached && !uiState.isLoading) {
+                    viewModel.getPokemonNextPage()
+                }
+
+                PokemonListItem(pokemon = pokemon, navController = navController)
+            }
+            if (!uiState.hasEndReached) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+            }
+        }
+    }
+
+    if (!uiState.userMessage.isNullOrEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.userMessage,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
 

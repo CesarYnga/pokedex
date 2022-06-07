@@ -5,11 +5,11 @@ import androidx.compose.ui.text.intl.Locale
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import java.lang.Exception
 
-data class PokemonEntity(
+data class PokemonResponse(
     val name: String,
     val url: String
 ) {
-    fun toPokemon():Pokemon {
+    fun toPokemon(): Pokemon {
         val id = try {
             url.split("/".toRegex()).dropLast(1).last().toInt()
         } catch (e: Exception) {
