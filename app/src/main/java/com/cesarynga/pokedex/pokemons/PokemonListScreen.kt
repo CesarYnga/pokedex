@@ -89,7 +89,12 @@ fun PokemonList(navController: NavController, modifier: Modifier, viewModel: Pok
             if (!uiState.hasEndReached) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .size(16.dp)
+                                .align(Alignment.Center)
+                        )
                     }
                 }
             }
