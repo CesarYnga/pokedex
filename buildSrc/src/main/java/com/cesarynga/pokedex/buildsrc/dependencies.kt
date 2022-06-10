@@ -11,16 +11,17 @@ object Libs {
     const val junit = "junit:junit:4.13.2"
 
     const val material3 = "com.google.android.material:material:1.6.0-alpha03"
+    const val truth = "com.google.truth:truth:1.1.3"
 
     object Kotlin {
-        const val version = "1.6.21"
+        private const val version = "1.6.21"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
     }
 
     object Coroutines {
-        private const val version = "1.6.0"
+        private const val version = "1.6.1"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
@@ -37,7 +38,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.2.0-beta02"
+            private const val version = "1.2.0-beta02"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -57,7 +58,7 @@ object Libs {
 
             object Material3 {
                 const val snapshot = ""
-                const val version = "1.0.0-alpha12"
+                private const val version = "1.0.0-alpha12"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
@@ -100,6 +101,11 @@ object Libs {
         const val converterGson = "com.squareup.retrofit2:converter-gson:$version"
     }
 
+    object OkHttp {
+        private const val version = "4.9.3"
+        const val mockWebServer = "com.squareup.okhttp3:mockwebserver:$version"
+    }
+
     object Coil {
         private const val version = "2.1.0"
         const val compose = "io.coil-kt:coil-compose:$version"
@@ -109,12 +115,4 @@ object Libs {
         private const val version = "3.1.5"
         const val androidXCompose = "io.insert-koin:koin-androidx-compose:$version"
     }
-}
-
-object Urls {
-    const val composeSnapshotRepo = "https://androidx.dev/snapshots/builds/" +
-            "${Libs.AndroidX.Compose.snapshot}/artifacts/repository/"
-    const val composeMaterial3SnapshotRepo = "https://androidx.dev/snapshots/builds/" +
-            "${Libs.AndroidX.Compose.Material3.snapshot}/artifacts/repository/"
-    const val accompanistSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots"
 }
