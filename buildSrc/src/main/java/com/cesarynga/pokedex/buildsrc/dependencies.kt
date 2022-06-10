@@ -71,6 +71,13 @@ object Libs {
             const val compose = "androidx.navigation:navigation-compose:$version"
         }
 
+        object Room {
+            private const val version = "2.4.2"
+            const val roomKtx = "androidx.room:room-ktx:$version"
+            const val annotationProcessor = "androidx.room:room-compiler:$version"
+            const val testing = "androidx.room:room-testing:$version"
+        }
+
         object Test {
             private const val version = "1.4.0"
             const val core = "androidx.test:core:$version"
