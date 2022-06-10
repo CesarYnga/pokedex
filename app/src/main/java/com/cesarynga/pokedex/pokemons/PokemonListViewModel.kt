@@ -15,33 +15,21 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
     private val _uiState = MutableStateFlow(PokemonListUiState())
     val uiState: StateFlow<PokemonListUiState> = _uiState
 
-    private var currentPage = 1
-    private var loadNextPageEnabled = true
-
     init {
-        getPokemonPage(currentPage)
+        getPokemonPage(0)
     }
 
-    fun getPokemonPage(page: Int) {
+    fun getPokemonPage(offset: Int) {
         viewModelScope.launch {
-            getPokemonListUseCase(page)
+            getPokemonListUseCase(offset)
                 .onStart { emitUiState(items = uiState.value.items, isLoading = true) }
                 .catch {
-                    loadNextPageEnabled = false
                     emitUiState(items = uiState.value.items, userMessage = it.localizedMessage, isLoading = false)
                 }
                 .collect {
-                    loadNextPageEnabled = true
                     emitUiState(items = uiState.value.items + it.results, isLoading = false, hasEndReached = it.next == null)
                 }
         }
-    }
-
-    fun getPokemonNextPage() {
-        if (loadNextPageEnabled) {
-            currentPage++
-        }
-        getPokemonPage(currentPage)
     }
 
     private fun emitUiState(

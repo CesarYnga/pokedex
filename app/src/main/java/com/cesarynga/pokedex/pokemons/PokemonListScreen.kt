@@ -81,7 +81,7 @@ fun PokemonList(navController: NavController, modifier: Modifier, viewModel: Pok
         ) {
             itemsIndexed(uiState.items) { index, pokemon ->
                 if (index >= uiState.items.size - 1 && !uiState.hasEndReached && !uiState.isLoading) {
-                    viewModel.getPokemonNextPage()
+                    viewModel.getPokemonPage(index + 1)
                 }
 
                 PokemonListItem(pokemon = pokemon, navController = navController)

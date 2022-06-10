@@ -12,10 +12,10 @@ class PokemonRemoteDataSource(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PokemonDataSource {
 
-    override fun getPokemonList(page: Int): Flow<PokemonPageResponse> = flow {
+    override fun getPokemonList(offset: Int): Flow<PokemonPageResponse> = flow {
         val pokemonPage = pokemonApi.getPokemonList(
             limit = PAGE_SIZE,
-            offset = (page - 1) * PAGE_SIZE
+            offset = offset
         )
         emit(pokemonPage)
     }.flowOn(ioDispatcher)

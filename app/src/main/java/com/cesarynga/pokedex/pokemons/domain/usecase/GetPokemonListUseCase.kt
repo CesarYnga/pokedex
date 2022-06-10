@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.map
 
 class GetPokemonListUseCase(private val pokemonRepository: PokemonRepository) {
 
-    operator fun invoke(page: Int): Flow<PokemonPage> =
-        pokemonRepository.getPokemonList(page).map {
+    operator fun invoke(offset: Int): Flow<PokemonPage> =
+        pokemonRepository.getPokemonList(offset).map {
             it.toPokemonPage()
         }
 }

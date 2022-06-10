@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface PokemonDataSource {
 
-    fun getPokemonList(page: Int): Flow<PokemonPageResponse>
+    fun getPokemonList(offset: Int): Flow<PokemonPageResponse>
 }
