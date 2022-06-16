@@ -98,6 +98,30 @@ fun PokemonList(navController: NavController, modifier: Modifier, viewModel: Pok
                         )
                     }
                 }
+                item {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        if (uiState.isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .padding(top = 24.dp)
+                                    .size(16.dp)
+                                    .align(Alignment.Center),
+                                strokeWidth = 3.dp
+                            )
+                        } else if (!uiState.userMessage.isNullOrEmpty()) {
+                            Icon(
+                                Icons.Outlined.Refresh,
+                                "",
+                                modifier = Modifier
+                                    .padding(top = 16.dp)
+                                    .size(24.dp)
+                                    .align(Alignment.Center)
+                                    .clickable {
+                                        viewModel.getPokemonPage(uiState.items.size)
+                                    })
+                        }
+                    }
+                }
             }
         }
     }
