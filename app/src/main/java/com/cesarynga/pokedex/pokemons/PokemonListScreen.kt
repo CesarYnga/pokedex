@@ -68,9 +68,24 @@ fun PokemonList(navController: NavController, modifier: Modifier, viewModel: Pok
 
     val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.isLoading && uiState.items.isEmpty()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    if (uiState.items.isEmpty()) {
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        } else if (!uiState.userMessage.isNullOrEmpty()) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Icon(
+                    Icons.Outlined.Refresh,
+                    "Retry",
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .size(24.dp)
+                        .align(Alignment.Center)
+                        .clickable {
+                            viewModel.getPokemonPage(uiState.items.size)
+                        })
+            }
         }
     }
 
@@ -89,18 +104,8 @@ fun PokemonList(navController: NavController, modifier: Modifier, viewModel: Pok
 
             if (!uiState.hasEndReached) {
                 item {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .size(16.dp)
-                                .align(Alignment.Center)
-                        )
-                    }
-                }
-                item {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        if (uiState.isLoading) {
+                    if (uiState.isLoading) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             CircularProgressIndicator(
                                 modifier = Modifier
                                     .padding(top = 24.dp)
@@ -108,10 +113,12 @@ fun PokemonList(navController: NavController, modifier: Modifier, viewModel: Pok
                                     .align(Alignment.Center),
                                 strokeWidth = 3.dp
                             )
-                        } else if (!uiState.userMessage.isNullOrEmpty()) {
+                        }
+                    } else if (!uiState.userMessage.isNullOrEmpty()) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
                             Icon(
                                 Icons.Outlined.Refresh,
-                                "",
+                                "Retry",
                                 modifier = Modifier
                                     .padding(top = 16.dp)
                                     .size(24.dp)
