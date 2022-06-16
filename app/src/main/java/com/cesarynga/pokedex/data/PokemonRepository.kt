@@ -1,9 +1,9 @@
 package com.cesarynga.pokedex.data
 
-import com.cesarynga.pokedex.data.source.remote.PokemonPageResponse
+import com.cesarynga.pokedex.data.source.PokemonPageModel
 import kotlinx.coroutines.flow.Flow
 
 interface PokemonRepository {
 
-    fun getPokemonList(lastId: Int): Flow<PokemonPageResponse>
+    fun getPokemonList(offset: Int): Flow<PokemonPageModel>
 }

@@ -40,7 +40,7 @@ class GetPokemonListUseCaseTest {
         assertThat(pokemonList.isNotEmpty()).isTrue()
         assertThat(pokemonList.size).isEqualTo(pokemonEntityList.size)
         pokemonList.forEachIndexed { index, pokemon ->
-            val mapped = pokemonEntityList[index].toPokemon()
+            val mapped = pokemonEntityList[index].toPokemonModel()
             assertThat(pokemon).isEqualTo(mapped)
         }
     }

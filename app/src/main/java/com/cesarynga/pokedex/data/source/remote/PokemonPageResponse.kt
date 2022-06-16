@@ -1,6 +1,6 @@
 package com.cesarynga.pokedex.data.source.remote
 
-import com.cesarynga.pokedex.pokemons.domain.model.PokemonPage
+import com.cesarynga.pokedex.data.source.PokemonPageModel
 
 data class PokemonPageResponse(
     val count: Int,
@@ -8,13 +8,11 @@ data class PokemonPageResponse(
     val previous: String?,
     val results: List<PokemonResponse>
 ) {
-    fun toPokemonPage(): PokemonPage {
-        return PokemonPage(
-            count = count,
-            next = next,
-            previous = previous,
+    fun toPokemonPageModel(): PokemonPageModel {
+        return PokemonPageModel(
+            hasNext = next != null,
             results = results.map {
-                it.toPokemon()
+                it.toPokemonModel()
             }
         )
     }

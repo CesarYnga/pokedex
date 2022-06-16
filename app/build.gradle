@@ -4,6 +4,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -70,7 +71,7 @@ dependencies {
     implementation Libs.Coil.compose
 
     implementation Libs.AndroidX.Room.roomKtx
-    annotationProcessor Libs.AndroidX.Room.annotationProcessor
+    kapt Libs.AndroidX.Room.annotationProcessor
 
     implementation Libs.Koin.androidXCompose
 

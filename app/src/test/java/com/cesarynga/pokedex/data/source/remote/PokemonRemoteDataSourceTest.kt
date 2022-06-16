@@ -19,7 +19,7 @@ import java.io.File
 @ExperimentalCoroutinesApi
 class PokemonRemoteDataSourceTest {
 
-    private lateinit var pokemonRemoteDataSource: PokemonRemoteDataSource
+    private lateinit var pokemonRemoteDataSource: PokemonRemoteDataSourceImpl
     private lateinit var pokemonApi: PokemonApi
     private lateinit var mockServer: MockWebServer
 
@@ -37,7 +37,7 @@ class PokemonRemoteDataSourceTest {
             .build()
             .create(PokemonApi::class.java)
 
-        pokemonRemoteDataSource = PokemonRemoteDataSource(pokemonApi, Dispatchers.Main)
+        pokemonRemoteDataSource = PokemonRemoteDataSourceImpl(pokemonApi, Dispatchers.Main)
     }
 
     @After

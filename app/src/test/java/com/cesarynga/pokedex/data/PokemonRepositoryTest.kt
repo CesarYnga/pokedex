@@ -14,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class PokemonRepositoryImplTest {
+class PokemonRepositoryTest {
 
     private lateinit var pokemonRepository: PokemonRepository
     private lateinit var pokemonRemoteDataSource: FakePokemonDataSource
