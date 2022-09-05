@@ -5,7 +5,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.2"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     const val junit = "junit:junit:4.13.2"
@@ -14,7 +14,7 @@ object Libs {
     const val truth = "com.google.truth:truth:1.1.3"
 
     object Kotlin {
-        private const val version = "1.6.21"
+        const val version = "1.6.21"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -38,7 +38,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            private const val version = "1.2.0-beta02"
+            const val version = "1.2.0-beta02"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
