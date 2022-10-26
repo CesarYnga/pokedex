@@ -27,7 +27,7 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
                     emitUiState(items = uiState.value.items, userMessage = it.localizedMessage, isLoading = false)
                 }
                 .collect {
-                    emitUiState(items = uiState.value.items + it.results, isLoading = false, hasEndReached = it.next == null)
+                    emitUiState(items = uiState.value.items + it.results, isLoading = false, hasEndReached = !it.hasNext)
                 }
         }
     }

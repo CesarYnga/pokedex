@@ -5,40 +5,41 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:7.2.1"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:7.3.1"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 
     const val junit = "junit:junit:4.13.2"
+    const val robolectric = "org.robolectric:robolectric:4.8"
 
-    const val material3 = "com.google.android.material:material:1.6.0-alpha03"
+    const val material3 = "com.google.android.material:material:1.6.1"
     const val truth = "com.google.truth:truth:1.1.3"
 
     object Kotlin {
-        private const val version = "1.6.21"
+        const val version = "1.7.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
     }
 
     object Coroutines {
-        private const val version = "1.6.1"
+        private const val version = "1.6.4"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
         const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version"
     }
 
     object AndroidX {
-        const val appcompat = "androidx.appcompat:appcompat:1.4.1"
-        const val coreKtx = "androidx.core:core-ktx:1.7.0"
+        const val appcompat = "androidx.appcompat:appcompat:1.5.1"
+        const val coreKtx = "androidx.core:core-ktx:1.9.0"
         const val palette = "androidx.palette:palette-ktx:1.0.0"
 
         object Activity {
-            const val compose = "androidx.activity:activity-compose:1.4.0"
+            const val compose = "androidx.activity:activity-compose:1.6.0"
         }
 
         object Compose {
             const val snapshot = ""
-            private const val version = "1.2.0-beta02"
+            const val version = "1.3.0-rc01"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -58,17 +59,28 @@ object Libs {
 
             object Material3 {
                 const val snapshot = ""
-                private const val version = "1.0.0-alpha12"
+                private const val version = "1.0.0-rc01"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
         }
 
         object Navigation {
-            private const val version = "2.4.2"
+            private const val version = "2.5.2"
             const val fragmentKtx = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
             const val compose = "androidx.navigation:navigation-compose:$version"
+        }
+
+        object Arch {
+            const val testing = "androidx.arch.core:core-testing:2.1.0"
+        }
+
+        object Room {
+            private const val version = "2.4.3"
+            const val roomKtx = "androidx.room:room-ktx:$version"
+            const val annotationProcessor = "androidx.room:room-compiler:$version"
+            const val testing = "androidx.room:room-testing:$version"
         }
 
         object Test {
@@ -85,7 +97,7 @@ object Libs {
         }
 
         object Lifecycle {
-            private const val version = "2.4.1"
+            private const val version = "2.5.1"
 
             const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
@@ -102,17 +114,17 @@ object Libs {
     }
 
     object OkHttp {
-        private const val version = "4.9.3"
+        private const val version = "4.10.0"
         const val mockWebServer = "com.squareup.okhttp3:mockwebserver:$version"
     }
 
     object Coil {
-        private const val version = "2.1.0"
+        private const val version = "2.2.2"
         const val compose = "io.coil-kt:coil-compose:$version"
     }
 
     object Koin {
-        private const val version = "3.1.5"
+        private const val version = "3.2.2"
         const val androidXCompose = "io.insert-koin:koin-androidx-compose:$version"
     }
 }

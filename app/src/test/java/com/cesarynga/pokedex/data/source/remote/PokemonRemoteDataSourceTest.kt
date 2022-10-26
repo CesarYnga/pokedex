@@ -37,7 +37,7 @@ class PokemonRemoteDataSourceTest {
             .build()
             .create(PokemonApi::class.java)
 
-        pokemonRemoteDataSource = PokemonRemoteDataSource(pokemonApi, Dispatchers.Main)
+        pokemonRemoteDataSource = PokemonRemoteDataSourceImpl(pokemonApi, Dispatchers.Main)
     }
 
     @After
@@ -46,7 +46,7 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun `Given server available, when first page is requested, then Pokemon list is received`() = runTest {
+    fun `Given server available, when first page is requested, then pokemon list is received`() = runTest {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-first-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())
@@ -67,7 +67,7 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun `Given server available, when middle page is requested, then Pokemon list is received`() = runTest {
+    fun `Given server available, when middle page is requested, then pokemon list is received`() = runTest {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-middle-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())
@@ -89,7 +89,7 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun `Given server available, when last page is requested, then Pokemon list is received`() = runTest {
+    fun `Given server available, when last page is requested, then pokemon list is received`() = runTest {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-last-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())

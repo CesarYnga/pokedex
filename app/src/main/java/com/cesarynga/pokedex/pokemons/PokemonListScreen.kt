@@ -8,22 +8,23 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.htmlEncode
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -34,7 +35,6 @@ import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import com.cesarynga.pokedex.ui.theme.PokedexTheme
 import com.cesarynga.pokedex.util.DominantColors
 import com.cesarynga.pokedex.util.rememberDominantColorState
-import okio.ByteString.Companion.encodeUtf8
 import org.koin.androidx.compose.getViewModel
 import java.net.URLEncoder
 
@@ -66,11 +66,26 @@ fun PokemonList(navController: NavController, viewModel: PokemonListViewModel = 
 @Composable
 fun PokemonList(navController: NavController, modifier: Modifier, viewModel: PokemonListViewModel) {
 
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.isLoading && uiState.items.isEmpty()) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    if (uiState.items.isEmpty()) {
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        } else if (!uiState.userMessage.isNullOrEmpty()) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Icon(
+                    Icons.Outlined.Refresh,
+                    "Retry",
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .size(24.dp)
+                        .align(Alignment.Center)
+                        .clickable {
+                            viewModel.getPokemonPage(uiState.items.size)
+                        })
+            }
         }
     }
 
@@ -80,21 +95,38 @@ fun PokemonList(navController: NavController, modifier: Modifier, viewModel: Pok
             modifier = modifier,
         ) {
             itemsIndexed(uiState.items) { index, pokemon ->
-                if (index >= uiState.items.size - 1 && !uiState.hasEndReached && !uiState.isLoading) {
+                if (index >= uiState.items.size - 1 && !uiState.hasEndReached && !uiState.isLoading && uiState.userMessage.isNullOrEmpty()) {
                     viewModel.getPokemonPage(index + 1)
                 }
 
                 PokemonListItem(pokemon = pokemon, navController = navController)
             }
+
             if (!uiState.hasEndReached) {
                 item {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .size(16.dp)
-                                .align(Alignment.Center)
-                        )
+                    if (uiState.isLoading) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .padding(top = 24.dp)
+                                    .size(16.dp)
+                                    .align(Alignment.Center),
+                                strokeWidth = 3.dp
+                            )
+                        }
+                    } else if (!uiState.userMessage.isNullOrEmpty()) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Icon(
+                                Icons.Outlined.Refresh,
+                                "Retry",
+                                modifier = Modifier
+                                    .padding(top = 16.dp)
+                                    .size(24.dp)
+                                    .align(Alignment.Center)
+                                    .clickable {
+                                        viewModel.getPokemonPage(uiState.items.size)
+                                    })
+                        }
                     }
                 }
             }
