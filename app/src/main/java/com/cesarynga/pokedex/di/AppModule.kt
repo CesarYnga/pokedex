@@ -39,7 +39,7 @@ val appModule = module {
 
     single<PokemonLocalDataSource>(named("pokemonLocalDataSource")) {
         PokemonLocalDataSourceImpl(
-            get()
+            get<PokemonDatabase>().pokemonDao()
         )
     }
 

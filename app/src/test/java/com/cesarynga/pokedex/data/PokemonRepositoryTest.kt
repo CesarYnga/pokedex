@@ -1,7 +1,9 @@
 package com.cesarynga.pokedex.data
 
 import com.cesarynga.pokedex.MainCoroutineRule
-import com.cesarynga.pokedex.data.source.FakePokemonDataSource
+import com.cesarynga.pokedex.data.source.PokemonModel
+import com.cesarynga.pokedex.data.source.local.FakePokemonLocalDataSource
+import com.cesarynga.pokedex.data.source.remote.FakePokemonRemoteDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonResponse
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,33 +19,46 @@ import org.junit.Test
 class PokemonRepositoryTest {
 
     private lateinit var pokemonRepository: PokemonRepository
-    private lateinit var pokemonRemoteDataSource: FakePokemonDataSource
-    private val pokemon1 = PokemonResponse("pokemon1", "url1")
-    private val pokemon2 = PokemonResponse("pokemon2", "url2")
-    private val pokemon3 = PokemonResponse("pokemon3", "url3")
-    private val remotePokemons = listOf(pokemon1, pokemon2, pokemon3)
+    private lateinit var pokemonLocalDataSource: FakePokemonLocalDataSource
+    private lateinit var pokemonRemoteDataSource: FakePokemonRemoteDataSource
+    private val pokemon1 = PokemonModel(1, "pokemon1", "url1")
+    private val pokemon2 = PokemonModel(2, "pokemon2", "url2")
+    private val pokemon3 = PokemonModel(3, "pokemon3", "url3")
+    private val pokemon4 = PokemonModel(4, "pokemon4", "url4")
+    private val pokemon5 = PokemonModel(5, "pokemon5", "url5")
+    private val pokemon6 = PokemonModel(6, "pokemon6", "url6")
+    private val localPokemons = listOf(pokemon1, pokemon2, pokemon3)
+    private val remotePokemons = listOf(pokemon4, pokemon5, pokemon6)
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun setUp() {
-        pokemonRemoteDataSource = FakePokemonDataSource(remotePokemons)
-        pokemonRepository = PokemonRepositoryImpl(pokemonRemoteDataSource)
+        pokemonRemoteDataSource = FakePokemonRemoteDataSource(remotePokemons, false)
+        pokemonLocalDataSource = FakePokemonLocalDataSource(localPokemons)
+        pokemonRepository = PokemonRepositoryImpl(pokemonRemoteDataSource, pokemonLocalDataSource)
     }
 
     @Test
-    fun `Given remote data source is available, when pokemon list is requested, then repository should return remote pokemon list`() =
-        runTest {
+    fun `Given local data source with no data, when pokemon list is requested, then repository should return remote pokemon list`() = runTest {
+        pokemonLocalDataSource.pokemonList = emptyList()
+        val pokemons = pokemonRepository.getPokemonList(20).first()
 
-            val pokemons = pokemonRepository.getPokemonList(20).first()
-
-            assertThat(pokemons).isEqualTo(remotePokemons)
-        }
+        assertThat(pokemons.results).isEqualTo(remotePokemons)
+    }
 
     @Test
-    fun `Given remote data source is unavailable, when pokemon list is requested, then an error is thrown`() =
+    fun `Given local data source with available data, when pokemon list is requested first page, then repository should return local pokemon list`() = runTest {
+        val pokemons = pokemonRepository.getPokemonList(0).first()
+
+        assertThat(pokemons.results).isEqualTo(localPokemons)
+    }
+
+    @Test
+    fun `Given local data source with no data and remote data source not available, when pokemon list is requested, then an error is thrown`() =
         runTest {
+            pokemonLocalDataSource.pokemonList = emptyList()
             // Make remote data source unavailable
             pokemonRemoteDataSource.pokemonList = null
 

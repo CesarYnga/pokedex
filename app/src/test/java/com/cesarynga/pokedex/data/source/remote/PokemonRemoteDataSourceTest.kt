@@ -19,7 +19,7 @@ import java.io.File
 @ExperimentalCoroutinesApi
 class PokemonRemoteDataSourceTest {
 
-    private lateinit var pokemonRemoteDataSource: PokemonRemoteDataSourceImpl
+    private lateinit var pokemonRemoteDataSource: PokemonRemoteDataSource
     private lateinit var pokemonApi: PokemonApi
     private lateinit var mockServer: MockWebServer
 
@@ -46,7 +46,7 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun `Given server available, when first page is requested, then Pokemon list is received`() = runTest {
+    fun `Given server available, when first page is requested, then pokemon list is received`() = runTest {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-first-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())
@@ -67,7 +67,7 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun `Given server available, when middle page is requested, then Pokemon list is received`() = runTest {
+    fun `Given server available, when middle page is requested, then pokemon list is received`() = runTest {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-middle-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())
@@ -89,7 +89,7 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun `Given server available, when last page is requested, then Pokemon list is received`() = runTest {
+    fun `Given server available, when last page is requested, then pokemon list is received`() = runTest {
         val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-last-page-response.json")
         val file = File(url.path)
         val json = String(file.readBytes())

@@ -5,6 +5,7 @@ import com.cesarynga.pokedex.data.source.local.PokemonLocalDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 class PokemonRepositoryImpl(
@@ -13,14 +14,15 @@ class PokemonRepositoryImpl(
 ) : PokemonRepository {
 
     override fun getPokemonList(offset: Int): Flow<PokemonPageModel> {
-
         return if (offset == 0) {
             val localPokemons = pokemonLocalDataSource.getAllPokemons()
-            localPokemons.flatMapMerge {
-                if (it.results.isEmpty()) {
+            localPokemons.flatMapMerge { pokemonList ->
+                if (pokemonList.isEmpty()) {
                     loadPokemonsFromRemoteDataSource(0)
                 } else {
-                    localPokemons
+                    localPokemons.map { pokemonModel ->
+                        PokemonPageModel(true, pokemonModel)
+                    }
                 }
             }
         } else {

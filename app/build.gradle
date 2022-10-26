@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.cesarynga.pokedex"
         minSdk 26
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -35,7 +35,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
     buildFeatures {
         compose true
@@ -47,6 +46,11 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
         }
     }
     namespace 'com.cesarynga.pokedex'
@@ -76,9 +80,14 @@ dependencies {
     implementation Libs.Koin.androidXCompose
 
     testImplementation Libs.junit
+    testImplementation Libs.robolectric
     testImplementation Libs.OkHttp.mockWebServer
     testImplementation Libs.truth
     testImplementation Libs.Coroutines.test
+    testImplementation Libs.AndroidX.Arch.testing
+    testImplementation Libs.AndroidX.Test.core
+    testImplementation Libs.AndroidX.Test.rules
+    testImplementation Libs.AndroidX.Test.Ext.junit
     testImplementation Libs.AndroidX.Room.testing
 
     androidTestImplementation Libs.AndroidX.Test.core

@@ -1,7 +1,6 @@
 package com.cesarynga.pokedex.data.source.local
 
 import com.cesarynga.pokedex.data.source.PokemonModel
-import com.cesarynga.pokedex.data.source.PokemonPageModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -10,19 +9,19 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 class PokemonLocalDataSourceImpl(
-    private val pokemonDb: PokemonDatabase,
+    private val pokemonDao: PokemonDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PokemonLocalDataSource {
 
-    override fun getAllPokemons(): Flow<PokemonPageModel> = flow {
-        val pokemonList = pokemonDb.pokemonDao().getAllPokemons().map {
+    override fun getAllPokemons(): Flow<List<PokemonModel>> = flow {
+        val pokemonList = pokemonDao.getAllPokemons().map {
             it.toPokemonModel()
         }
-        emit(PokemonPageModel(true, pokemonList))
+        emit(pokemonList)
     }.flowOn(ioDispatcher)
 
     override suspend fun savePokemonList(pokemonList: List<PokemonModel>) = withContext(ioDispatcher) {
-        pokemonDb.pokemonDao().insertPokemons(*pokemonList.map {
+        pokemonDao.insertPokemons(*pokemonList.map {
             it.toPokemonEntity()
         }.toTypedArray())
     }

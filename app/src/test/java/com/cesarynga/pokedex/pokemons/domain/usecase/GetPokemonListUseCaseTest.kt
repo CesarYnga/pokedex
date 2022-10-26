@@ -2,7 +2,7 @@ package com.cesarynga.pokedex.pokemons.domain.usecase
 
 import com.cesarynga.pokedex.MainCoroutineRule
 import com.cesarynga.pokedex.data.FakePokemonRepository
-import com.cesarynga.pokedex.data.source.remote.PokemonResponse
+import com.cesarynga.pokedex.data.source.PokemonModel
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
@@ -18,29 +18,28 @@ class GetPokemonListUseCaseTest {
 
     private lateinit var getPokemonListUseCase: GetPokemonListUseCase
     private lateinit var fakePokemonRepository: FakePokemonRepository
-    private val pokemon1 = PokemonResponse("pokemon1", "https://pokeapi.co/api/v2/pokemon/1/")
-    private val pokemon2 = PokemonResponse("pokemon2", "https://pokeapi.co/api/v2/pokemon/2/")
-    private val pokemon3 = PokemonResponse("pokemon3", "https://pokeapi.co/api/v2/pokemon/3/")
-    private val pokemonEntityList = listOf(pokemon1, pokemon2, pokemon3)
+    private val pokemon1 = PokemonModel(1, "pokemon1", "https://pokeapi.co/api/v2/pokemon/1/")
+    private val pokemon2 = PokemonModel(2, "pokemon2", "https://pokeapi.co/api/v2/pokemon/2/")
+    private val pokemon3 = PokemonModel(3, "pokemon3", "https://pokeapi.co/api/v2/pokemon/3/")
+    private val pokemonModelList = listOf(pokemon1, pokemon2, pokemon3)
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
     @Before
     fun setUp() {
-        fakePokemonRepository = FakePokemonRepository(pokemonEntityList)
+        fakePokemonRepository = FakePokemonRepository(pokemonModelList, false)
         getPokemonListUseCase = GetPokemonListUseCase(fakePokemonRepository)
     }
 
     @Test
     fun `Given a non empty pokemon repository, when calling pokemon list use case, then the result is mapping correctly`() = runTest {
-        val pokemonList = getPokemonListUseCase(20).first()
+        val pokemonPage = getPokemonListUseCase(20).first()
 
-        assertThat(pokemonList).isNotNull()
-        assertThat(pokemonList.isNotEmpty()).isTrue()
-        assertThat(pokemonList.size).isEqualTo(pokemonEntityList.size)
-        pokemonList.forEachIndexed { index, pokemon ->
-            val mapped = pokemonEntityList[index].toPokemonModel()
+        assertThat(pokemonPage).isNotNull()
+        assertThat(pokemonPage.results.size).isEqualTo(pokemonModelList.size)
+        pokemonPage.results.forEachIndexed { index, pokemon ->
+            val mapped = pokemonModelList[index].toPokemon()
             assertThat(pokemon).isEqualTo(mapped)
         }
     }
@@ -52,7 +51,7 @@ class GetPokemonListUseCaseTest {
         val pokemonList = getPokemonListUseCase(20).first()
 
         assertThat(pokemonList).isNotNull()
-        assertThat(pokemonList.isEmpty()).isTrue()
+        assertThat(pokemonList.results.isEmpty()).isTrue()
     }
 
     @Test
