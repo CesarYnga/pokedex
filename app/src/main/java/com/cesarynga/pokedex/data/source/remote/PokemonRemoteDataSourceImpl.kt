@@ -12,16 +12,11 @@ class PokemonRemoteDataSourceImpl(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PokemonRemoteDataSource {
 
-    override fun getPokemonList(offset: Int): Flow<PokemonPageModel> = flow {
+    override fun getPokemonList(offset: Int, pageSize: Int): Flow<PokemonPageModel> = flow {
         val pokemonPage = pokemonApi.getPokemonList(
-            limit = PAGE_SIZE,
+            limit = pageSize,
             offset = offset
         ).toPokemonPageModel()
-        kotlinx.coroutines.delay(5000)
         emit(pokemonPage)
     }.flowOn(ioDispatcher)
-
-    companion object {
-        private const val PAGE_SIZE = 20
-    }
 }

@@ -33,35 +33,38 @@ class GetPokemonListUseCaseTest {
     }
 
     @Test
-    fun `Given a non empty pokemon repository, when calling pokemon list use case, then the result is mapping correctly`() = runTest {
-        val pokemonPage = getPokemonListUseCase(20).first()
+    fun `Given a non empty pokemon repository, when calling pokemon list use case, then the result is mapping correctly`() =
+        runTest {
+            val pokemonPage = getPokemonListUseCase(20).first()
 
-        assertThat(pokemonPage).isNotNull()
-        assertThat(pokemonPage.results.size).isEqualTo(pokemonModelList.size)
-        pokemonPage.results.forEachIndexed { index, pokemon ->
-            val mapped = pokemonModelList[index].toPokemon()
-            assertThat(pokemon).isEqualTo(mapped)
+            assertThat(pokemonPage).isNotNull()
+            assertThat(pokemonPage.results.size).isEqualTo(pokemonModelList.size)
+            pokemonPage.results.forEachIndexed { index, pokemon ->
+                val mapped = pokemonModelList[index].toPokemon()
+                assertThat(pokemon).isEqualTo(mapped)
+            }
         }
-    }
 
     @Test
-    fun `Given a empty pokemon repository, when calling pokemon list use case, then the result empty`() = runTest {
-        fakePokemonRepository.pokemonList = emptyList()
+    fun `Given a empty pokemon repository, when calling pokemon list use case, then the result empty`() =
+        runTest {
+            fakePokemonRepository.pokemonList = emptyList()
 
-        val pokemonList = getPokemonListUseCase(20).first()
+            val pokemonList = getPokemonListUseCase(20).first()
 
-        assertThat(pokemonList).isNotNull()
-        assertThat(pokemonList.results.isEmpty()).isTrue()
-    }
+            assertThat(pokemonList).isNotNull()
+            assertThat(pokemonList.results.isEmpty()).isTrue()
+        }
 
     @Test
-    fun `Given a unavailable repository, when calling pokemon list use case, then an error is thrown`() = runTest {
-        fakePokemonRepository.pokemonList = null
+    fun `Given a unavailable repository, when calling pokemon list use case, then an error is thrown`() =
+        runTest {
+            fakePokemonRepository.pokemonList = null
 
-        getPokemonListUseCase(20).catch {
-            // Result should be an exception
-            assertThat(it).isInstanceOf(Exception::class.java)
-            assertThat(it.message).isEqualTo("Pokemons not found")
-        }.collect()
-    }
+            getPokemonListUseCase(20).catch {
+                // Result should be an exception
+                assertThat(it).isInstanceOf(Exception::class.java)
+                assertThat(it.message).isEqualTo("Pokemons not found")
+            }.collect()
+        }
 }

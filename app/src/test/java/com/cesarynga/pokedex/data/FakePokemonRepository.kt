@@ -7,7 +7,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FakePokemonRepository(var pokemonList: List<PokemonModel>?, var hasNextPage: Boolean) : PokemonRepository {
+class FakePokemonRepository(var pokemonList: List<PokemonModel>?, var hasNextPage: Boolean) :
+    PokemonRepository {
 
     override fun getPokemonList(page: Int): Flow<PokemonPageModel> = flow {
         delay(3_000)

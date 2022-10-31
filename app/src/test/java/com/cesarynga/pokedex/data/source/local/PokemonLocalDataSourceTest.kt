@@ -20,7 +20,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@Config(sdk=[Build.VERSION_CODES.S_V2])
+@Config(sdk = [Build.VERSION_CODES.S_V2])
 @RunWith(AndroidJUnit4::class)
 class PokemonLocalDataSourceTest {
 
@@ -53,16 +53,17 @@ class PokemonLocalDataSourceTest {
     }
 
     @Test
-    fun `Given several pokemons saved in the database, when pokemons retrieved, then same pokemons are returned`() = runTest {
-        val newPokemon = PokemonModel(7, "Pokemon 7", "http://test-utl.com/7")
-        val newPokemon2 = PokemonModel(55, "Pokemon 55", "http://test-utl.com/55")
-        val newPokemon3 = PokemonModel(100, "Pokemon 100", "http://test-utl.com/100")
-        val newPokemonList = listOf(newPokemon, newPokemon2, newPokemon3)
-        pokemonLocalDataSource.savePokemonList(newPokemonList)
+    fun `Given several pokemons saved in the database, when pokemons retrieved, then same pokemons are returned`() =
+        runTest {
+            val newPokemon = PokemonModel(7, "Pokemon 7", "http://test-url.com/7")
+            val newPokemon2 = PokemonModel(55, "Pokemon 55", "http://test-url.com/55")
+            val newPokemon3 = PokemonModel(100, "Pokemon 100", "http://test-url.com/100")
+            val newPokemonList = listOf(newPokemon, newPokemon2, newPokemon3)
+            pokemonLocalDataSource.savePokemonList(newPokemonList)
 
-        val result = pokemonLocalDataSource.getAllPokemons().first()
+            val result = pokemonLocalDataSource.getAllPokemons().first()
 
-        assertThat(result.size).isEqualTo(newPokemonList.size)
-        assertThat(result).isEqualTo(newPokemonList)
-    }
+            assertThat(result.size).isEqualTo(newPokemonList.size)
+            assertThat(result).isEqualTo(newPokemonList)
+        }
 }

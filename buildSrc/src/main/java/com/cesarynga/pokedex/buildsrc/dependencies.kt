@@ -34,12 +34,11 @@ object Libs {
         const val palette = "androidx.palette:palette-ktx:1.0.0"
 
         object Activity {
-            const val compose = "androidx.activity:activity-compose:1.6.0"
+            const val compose = "androidx.activity:activity-compose:1.6.1"
         }
 
         object Compose {
-            const val snapshot = ""
-            const val version = "1.3.0-rc01"
+            const val version = "1.3.0"
 
             const val ui = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -58,15 +57,14 @@ object Libs {
             const val viewBinding = "androidx.compose.ui:ui-viewbinding:$version"
 
             object Material3 {
-                const val snapshot = ""
-                private const val version = "1.0.0-rc01"
+                private const val version = "1.0.0"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
         }
 
         object Navigation {
-            private const val version = "2.5.2"
+            private const val version = "2.5.3"
             const val fragmentKtx = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
             const val compose = "androidx.navigation:navigation-compose:$version"

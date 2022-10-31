@@ -46,68 +46,74 @@ class PokemonRemoteDataSourceTest {
     }
 
     @Test
-    fun `Given server available, when first page is requested, then pokemon list is received`() = runTest {
-        val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-first-page-response.json")
-        val file = File(url.path)
-        val json = String(file.readBytes())
+    fun `Given server available, when first page is requested, then pokemon list is received`() =
+        runTest {
+            val url =
+                javaClass.classLoader!!.getResource("api-response/pokemon-list-first-page-response.json")
+            val file = File(url.path)
+            val json = String(file.readBytes())
 
-        mockServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(json)
-        )
+            mockServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(json)
+            )
 
-        val response = pokemonApi.getPokemonList()
+            val response = pokemonApi.getPokemonList()
 
-        assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
-        assertThat(response.next).isNotNull()
-        assertThat(response.next).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=20&limit=20")
-        assertThat(response.previous).isNull()
-        assertThat(response.results.size).isEqualTo(POKEMON_LIST_SIZE)
-    }
-
-    @Test
-    fun `Given server available, when middle page is requested, then pokemon list is received`() = runTest {
-        val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-middle-page-response.json")
-        val file = File(url.path)
-        val json = String(file.readBytes())
-
-        mockServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(json)
-        )
-
-        val response = pokemonApi.getPokemonList()
-
-        assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
-        assertThat(response.next).isNotNull()
-        assertThat(response.next).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=100&limit=20")
-        assertThat(response.previous).isNotNull()
-        assertThat(response.previous).isEqualTo( "https://pokeapi.co/api/v2/pokemon?offset=60&limit=20")
-        assertThat(response.results.size).isEqualTo(POKEMON_LIST_SIZE)
-    }
+            assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
+            assertThat(response.next).isNotNull()
+            assertThat(response.next).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=20&limit=20")
+            assertThat(response.previous).isNull()
+            assertThat(response.results.size).isEqualTo(POKEMON_LIST_SIZE)
+        }
 
     @Test
-    fun `Given server available, when last page is requested, then pokemon list is received`() = runTest {
-        val url = javaClass.classLoader!!.getResource("api-response/pokemon-list-last-page-response.json")
-        val file = File(url.path)
-        val json = String(file.readBytes())
+    fun `Given server available, when middle page is requested, then pokemon list is received`() =
+        runTest {
+            val url =
+                javaClass.classLoader!!.getResource("api-response/pokemon-list-middle-page-response.json")
+            val file = File(url.path)
+            val json = String(file.readBytes())
 
-        mockServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(json)
-        )
+            mockServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(json)
+            )
 
-        val response = pokemonApi.getPokemonList()
+            val response = pokemonApi.getPokemonList()
 
-        assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
-        assertThat(response.next).isNull()
-        assertThat(response.previous).isNotNull()
-        assertThat(response.previous).isEqualTo( "https://pokeapi.co/api/v2/pokemon?offset=1100&limit=20")
-        assertThat(response.results.size).isEqualTo( 6)
-    }
+            assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
+            assertThat(response.next).isNotNull()
+            assertThat(response.next).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=100&limit=20")
+            assertThat(response.previous).isNotNull()
+            assertThat(response.previous).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=60&limit=20")
+            assertThat(response.results.size).isEqualTo(POKEMON_LIST_SIZE)
+        }
+
+    @Test
+    fun `Given server available, when last page is requested, then pokemon list is received`() =
+        runTest {
+            val url =
+                javaClass.classLoader!!.getResource("api-response/pokemon-list-last-page-response.json")
+            val file = File(url.path)
+            val json = String(file.readBytes())
+
+            mockServer.enqueue(
+                MockResponse()
+                    .setResponseCode(200)
+                    .setBody(json)
+            )
+
+            val response = pokemonApi.getPokemonList()
+
+            assertThat(response.count).isEqualTo(POKEMON_LIST_COUNT)
+            assertThat(response.next).isNull()
+            assertThat(response.previous).isNotNull()
+            assertThat(response.previous).isEqualTo("https://pokeapi.co/api/v2/pokemon?offset=1100&limit=20")
+            assertThat(response.results.size).isEqualTo(6)
+        }
 
     @Test
     fun `Given server unavailable, when a page is requested, then error is returned`() = runTest {

@@ -10,7 +10,7 @@ class FakePokemonRemoteDataSource(
     var hasNextPage: Boolean
 ) : PokemonRemoteDataSource {
 
-    override fun getPokemonList(page: Int): Flow<PokemonPageModel> = flow {
+    override fun getPokemonList(page: Int, pageSize: Int): Flow<PokemonPageModel> = flow {
         if (pokemonList != null) {
             emit(PokemonPageModel(hasNextPage, pokemonList!!))
         } else {

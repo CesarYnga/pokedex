@@ -36,28 +36,30 @@ class PokemonListViewModelTest {
     }
 
     @Test
-    fun `Given a non empty pokemon repository, when getting pokemon list, then loading state is emitted and pokemon list is emitted`() = runTest {
-        val loading = pokemonListViewModel.uiState.first()
-        val success = pokemonListViewModel.uiState.drop(1).first()
+    fun `Given a non empty pokemon repository, when getting pokemon list, then loading state is emitted and pokemon list is emitted`() =
+        runTest {
+            val loading = pokemonListViewModel.uiState.first()
+            val success = pokemonListViewModel.uiState.drop(1).first()
 
-        assertThat(loading.isLoading).isTrue()
+            assertThat(loading.isLoading).isTrue()
 
-        assertThat(success.isLoading).isFalse()
-        assertThat(success.items).isEqualTo(pokemonList.map { it.toPokemon() })
-    }
+            assertThat(success.isLoading).isFalse()
+            assertThat(success.items).isEqualTo(pokemonList.map { it.toPokemon() })
+        }
 
     @Test
-    fun `Given a failure in pokemon repository, when getting pokemon list, then loading state is emitted and error is emitted`() = runTest {
-        // Make repository unavailable
-        fakePokemonRepository.pokemonList = null
+    fun `Given a failure in pokemon repository, when getting pokemon list, then loading state is emitted and error is emitted`() =
+        runTest {
+            // Make repository unavailable
+            fakePokemonRepository.pokemonList = null
 
-        val loading = pokemonListViewModel.uiState.first()
-        val error = pokemonListViewModel.uiState.drop(1).first()
+            val loading = pokemonListViewModel.uiState.first()
+            val error = pokemonListViewModel.uiState.drop(1).first()
 
-        assertThat(loading.isLoading).isTrue()
+            assertThat(loading.isLoading).isTrue()
 
-        assertThat(error.isLoading).isFalse()
-        assertThat(error.items).isEmpty()
-        assertThat(error.userMessage).isNotEmpty()
-    }
+            assertThat(error.isLoading).isFalse()
+            assertThat(error.items).isEmpty()
+            assertThat(error.userMessage).isNotEmpty()
+        }
 }
