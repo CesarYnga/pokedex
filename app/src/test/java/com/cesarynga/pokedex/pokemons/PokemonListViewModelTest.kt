@@ -44,7 +44,7 @@ class PokemonListViewModelTest {
             assertThat(loading.isLoading).isTrue()
 
             assertThat(success.isLoading).isFalse()
-            assertThat(success.items).isEqualTo(pokemonList.map { it.toPokemon() })
+            assertThat(success.pokemons).isEqualTo(pokemonList.map { it.toPokemon() })
         }
 
     @Test
@@ -59,7 +59,7 @@ class PokemonListViewModelTest {
             assertThat(loading.isLoading).isTrue()
 
             assertThat(error.isLoading).isFalse()
-            assertThat(error.items).isEmpty()
+            assertThat(error.pokemons).isEmpty()
             assertThat(error.userMessage).isNotEmpty()
         }
 }

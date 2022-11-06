@@ -66,11 +66,13 @@ dependencies {
     implementation Libs.AndroidX.Compose.ui
     debugImplementation Libs.AndroidX.Compose.uiTooling
     implementation Libs.AndroidX.Compose.Material3.material3
+    implementation Libs.AndroidX.Lifecycle.runtimeCompose
 
     implementation Libs.AndroidX.Navigation.compose
 
     implementation Libs.Retrofit.retrofit
     implementation Libs.Retrofit.converterGson
+    implementation Libs.OkHttp.logginInterceptor
 
     implementation Libs.Coil.compose
 

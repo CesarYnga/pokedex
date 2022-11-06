@@ -7,16 +7,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.cesarynga.pokedex.pokemons.PokemonListViewModel
+import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun PokemonDetails(navController: NavController, pokemonId: Int, pokemonName: String, pokemonImageUrl: String) {
+fun PokemonDetails(
+    pokemonId: Int,
+    viewModel: PokemonListViewModel = getViewModel()
+) {
     Column {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(pokemonImageUrl)
-                .build(),
-            contentDescription = pokemonName,
-        )
-        Text(text = "Details: ${pokemonName}")
+        Text(text = "Details: $pokemonId")
     }
 }

@@ -11,6 +11,8 @@ import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSourceImpl
 import com.cesarynga.pokedex.pokemons.PokemonListViewModel
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -43,9 +45,18 @@ val appModule = module {
         )
     }
 
+    single{
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+    }
+
     single {
         Retrofit.Builder()
             .baseUrl("https://pokeapi.co/api/v2/")
+            .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(PokemonApi::class.java)

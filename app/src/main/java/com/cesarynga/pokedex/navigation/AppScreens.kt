@@ -1,6 +1,14 @@
 package com.cesarynga.pokedex.navigation
 
-sealed class AppScreen(val route: String) {
-    object PokemonListScreen : AppScreen("pokemonList")
-    object PokemonDetailsScreen : AppScreen("pokemon_details")
+sealed class AppScreen(val name: String) {
+    object PokemonListScreen : AppScreen("pokemonList") {
+        val ROUTE = "$name"
+    }
+
+    object PokemonDetailsScreen : AppScreen("pokemon_details") {
+        val ROUTE = "$name/{${Args.POKEMON_ID}}"
+        object Args {
+            const val POKEMON_ID = "pokemonId"
+        }
+    }
 }

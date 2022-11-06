@@ -19,15 +19,19 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
         getPokemonPage(0)
     }
 
-    fun getPokemonPage(offset: Int) {
+    fun getNextPokemonPage() {
+        getPokemonPage(uiState.value.pokemons.size)
+    }
+
+    private fun getPokemonPage(offset: Int) {
         viewModelScope.launch {
             getPokemonListUseCase(offset)
-                .onStart { emitUiState(items = uiState.value.items, isLoading = true) }
+                .onStart { emitUiState(items = uiState.value.pokemons, isLoading = true) }
                 .catch {
-                    emitUiState(items = uiState.value.items, userMessage = it.localizedMessage, isLoading = false)
+                    emitUiState(items = uiState.value.pokemons, userMessage = it.localizedMessage, isLoading = false)
                 }
                 .collect {
-                    emitUiState(items = uiState.value.items + it.results, isLoading = false, hasEndReached = !it.hasNext)
+                    emitUiState(items = uiState.value.pokemons + it.results, isLoading = false, isLastPage = !it.hasNext)
                 }
         }
     }
@@ -35,17 +39,17 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
     private fun emitUiState(
         items: List<Pokemon> = emptyList(),
         isLoading: Boolean = false,
-        hasEndReached: Boolean = false,
+        isLastPage: Boolean = false,
         userMessage: String? = null
     ) {
-        val uiState = PokemonListUiState(items, isLoading, hasEndReached, userMessage)
+        val uiState = PokemonListUiState(items, isLoading, isLastPage, userMessage)
         this._uiState.value = uiState
     }
 }
 
 data class PokemonListUiState(
-    val items: List<Pokemon> = emptyList(),
+    val pokemons: List<Pokemon> = emptyList(),
     val isLoading: Boolean = false,
-    val hasEndReached: Boolean = false,
+    val isLastPage: Boolean = false,
     val userMessage: String? = null
 )

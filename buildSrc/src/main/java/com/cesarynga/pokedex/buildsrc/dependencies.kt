@@ -95,12 +95,13 @@ object Libs {
         }
 
         object Lifecycle {
-            private const val version = "2.5.1"
+            private const val version = "2.6.0-alpha03"
 
             const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
+            const val runtimeCompose = "androidx.lifecycle:lifecycle-runtime-compose:$version"
             const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
         }
     }
@@ -114,6 +115,7 @@ object Libs {
     object OkHttp {
         private const val version = "4.10.0"
         const val mockWebServer = "com.squareup.okhttp3:mockwebserver:$version"
+        const val logginInterceptor = "com.squareup.okhttp3:logging-interceptor:$version"
     }
 
     object Coil {
