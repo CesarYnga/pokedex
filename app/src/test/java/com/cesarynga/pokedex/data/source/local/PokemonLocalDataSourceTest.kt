@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.cesarynga.pokedex.MainCoroutineRule
+import com.cesarynga.pokedex.PokemonTestApp
 import com.cesarynga.pokedex.data.source.PokemonModel
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +21,8 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@Config(sdk = [Build.VERSION_CODES.S_V2])
 @RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.S_V2], application = PokemonTestApp::class)
 class PokemonLocalDataSourceTest {
 
     private lateinit var pokemonLocalDataSource: PokemonLocalDataSource

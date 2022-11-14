@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PokemonDao {
@@ -12,5 +13,8 @@ interface PokemonDao {
     fun insertPokemons(vararg pokemon: PokemonEntity)
 
     @Query("SELECT * FROM Pokemon")
-    fun getAllPokemons(): List<PokemonEntity>
+    fun getAllPokemons(): Flow<List<PokemonEntity>>
+
+    @Query("SELECT * FROM Pokemon WHERE id = :pokemonId")
+    fun getPokemonById(pokemonId: Int) : Flow<PokemonEntity>
 }

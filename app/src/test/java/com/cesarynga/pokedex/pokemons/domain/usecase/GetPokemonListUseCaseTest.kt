@@ -28,7 +28,8 @@ class GetPokemonListUseCaseTest {
 
     @Before
     fun setUp() {
-        fakePokemonRepository = FakePokemonRepository(pokemonModelList, false)
+        fakePokemonRepository = FakePokemonRepository()
+        fakePokemonRepository.addPokemons(*pokemonModelList.toTypedArray())
         getPokemonListUseCase = GetPokemonListUseCase(fakePokemonRepository)
     }
 
@@ -48,7 +49,7 @@ class GetPokemonListUseCaseTest {
     @Test
     fun `Given a empty pokemon repository, when calling pokemon list use case, then the result empty`() =
         runTest {
-            fakePokemonRepository.pokemonList = emptyList()
+            fakePokemonRepository.clearPokemons()
 
             val pokemonList = getPokemonListUseCase(20).first()
 
@@ -59,7 +60,7 @@ class GetPokemonListUseCaseTest {
     @Test
     fun `Given a unavailable repository, when calling pokemon list use case, then an error is thrown`() =
         runTest {
-            fakePokemonRepository.pokemonList = null
+            fakePokemonRepository.setReturnError(true)
 
             getPokemonListUseCase(20).catch {
                 // Result should be an exception

@@ -9,6 +9,7 @@ import com.cesarynga.pokedex.data.source.local.PokemonLocalDataSourceImpl
 import com.cesarynga.pokedex.data.source.remote.PokemonApi
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSourceImpl
+import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonById
 import com.cesarynga.pokedex.pokemons.PokemonListViewModel
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
 import okhttp3.OkHttpClient
@@ -22,10 +23,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
 
+    // View models
     viewModel { PokemonListViewModel(get()) }
 
+    // Use cases
     factory { GetPokemonListUseCase(get()) }
 
+    factory { GetPokemonById(get()) }
+
+    // Repositories
     single<PokemonRepository> {
         PokemonRepositoryImpl(
             get(named("pokemonRemoteDataSource")),
@@ -33,6 +39,7 @@ val appModule = module {
         )
     }
 
+    // Data sources
     single<PokemonRemoteDataSource>(named("pokemonRemoteDataSource")) {
         PokemonRemoteDataSourceImpl(
             get()
@@ -45,6 +52,7 @@ val appModule = module {
         )
     }
 
+    // Utility
     single{
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY

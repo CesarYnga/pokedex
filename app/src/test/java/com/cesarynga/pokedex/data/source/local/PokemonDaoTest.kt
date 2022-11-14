@@ -6,8 +6,10 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.cesarynga.pokedex.MainCoroutineRule
+import com.cesarynga.pokedex.PokemonTestApp
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -17,8 +19,8 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@Config(sdk = [Build.VERSION_CODES.S_V2])
 @RunWith(AndroidJUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.S_V2], application = PokemonTestApp::class)
 class PokemonDaoTest {
 
     private lateinit var database: PokemonDatabase
@@ -47,19 +49,14 @@ class PokemonDaoTest {
     }
 
     @Test
-    fun `Given pokemons inserted, when getting all pokemons, then returns the pokemons inserted`() =
+    fun `Given a pokemon inserted, when getting pokemon by id, then returns the pokemon inserted`() =
         runTest {
             val pokemon = PokemonEntity(1, "Pokemon 1", "http://test-url.com/1")
-            val pokemon2 = PokemonEntity(2, "Pokemon 2", "http://test-url.com/2")
-            val pokemon3 = PokemonEntity(3, "Pokemon 3", "http://test-url.com/3")
-            database.pokemonDao().insertPokemons(pokemon, pokemon2, pokemon3)
+            database.pokemonDao().insertPokemons(pokemon)
 
-            val pokemonLoaded = database.pokemonDao().getAllPokemons()
+            val pokemonLoaded = database.pokemonDao().getPokemonById(pokemon.id).first()
 
-            assertThat(pokemonLoaded.size).isEqualTo(3)
-            assertThat(pokemonLoaded).contains(pokemon)
-            assertThat(pokemonLoaded).contains(pokemon2)
-            assertThat(pokemonLoaded).contains(pokemon3)
+            assertThat(pokemonLoaded).isEqualTo(pokemon)
         }
 
     @Test
@@ -71,11 +68,26 @@ class PokemonDaoTest {
             val newPokemon = PokemonEntity(1, "New Pokemon", "http://test-url.com/152")
             database.pokemonDao().insertPokemons(newPokemon)
 
-            val pokemonLoaded = database.pokemonDao().getAllPokemons()
+            val pokemonLoaded = database.pokemonDao().getPokemonById(pokemon.id).first()
 
-            assertThat(pokemonLoaded.size).isEqualTo(1)
-            assertThat(pokemonLoaded[0].id).isEqualTo(pokemon.id)
-            assertThat(pokemonLoaded[0].name).isEqualTo(newPokemon.name)
-            assertThat(pokemonLoaded[0].imageUrl).isEqualTo(newPokemon.imageUrl)
+            assertThat(pokemonLoaded.id).isEqualTo(pokemon.id)
+            assertThat(pokemonLoaded.name).isEqualTo(newPokemon.name)
+            assertThat(pokemonLoaded.imageUrl).isEqualTo(newPokemon.imageUrl)
+        }
+
+    @Test
+    fun `Given pokemons inserted, when getting all pokemons, then returns the pokemons inserted`() =
+        runTest {
+            val pokemon = PokemonEntity(1, "Pokemon 1", "http://test-url.com/1")
+            val pokemon2 = PokemonEntity(2, "Pokemon 2", "http://test-url.com/2")
+            val pokemon3 = PokemonEntity(3, "Pokemon 3", "http://test-url.com/3")
+            database.pokemonDao().insertPokemons(pokemon, pokemon2, pokemon3)
+
+            val pokemonsLoaded = database.pokemonDao().getAllPokemons().first()
+
+            assertThat(pokemonsLoaded.size).isEqualTo(3)
+            assertThat(pokemonsLoaded).contains(pokemon)
+            assertThat(pokemonsLoaded).contains(pokemon2)
+            assertThat(pokemonsLoaded).contains(pokemon3)
         }
 }

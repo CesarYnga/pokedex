@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.cesarynga.pokedex.pokemondetails.PokemonDetails
+import com.cesarynga.pokedex.pokemondetail.PokemonDetail
 import com.cesarynga.pokedex.pokemons.PokemonListScreen
 
 @Composable
@@ -40,7 +40,7 @@ fun AppNavigation(
             )
         ) { backStackEntry ->
             backStackEntry.arguments?.let {
-                PokemonDetails(
+                PokemonDetail(
                     it.getInt(AppScreen.PokemonDetailsScreen.Args.POKEMON_ID)
                 )
             }
