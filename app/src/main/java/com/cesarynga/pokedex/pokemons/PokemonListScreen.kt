@@ -1,6 +1,8 @@
 package com.cesarynga.pokedex.pokemons
 
-import androidx.compose.foundation.background
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,30 +44,44 @@ fun PokemonListScreen(
     modifier: Modifier = Modifier,
     viewModel: PokemonListViewModel = getViewModel()
 ) {
-    Box(
-        Modifier
-            .background(MaterialTheme.colorScheme.primary)
-            .systemBarsPadding()
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = stringResource(id = R.string.app_name)) },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
-                )
-            },
-            modifier = modifier.fillMaxSize()
-        ) { contentPadding ->
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MediumTopAppBar(
+                title = { Text(text = stringResource(id = R.string.app_name)) },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(),
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) { contentPadding ->
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        Column(modifier = Modifier.padding(contentPadding)) {
+            var text by remember {
+                mutableStateOf("")
+            }
+
+            TextField(
+                modifier= Modifier.fillMaxWidth(),
+                value = text,
+                placeholder = { Text(text = "Search") },
+                onValueChange = { text = it })
 
             PokemonListContent(
                 loading = uiState.isLoading,
-                error = !uiState.userMessage.isNullOrEmpty(),
                 lastPage = uiState.isLastPage,
                 pokemons = uiState.pokemons,
+                noPokemonLabelRes = R.string.no_pokemons,
+                noPokemonLogoRes = R.drawable.logo_no_pokemon,
+                errorLabelRes = uiState.userMessage,
+                errorLogoRes = R.drawable.logo_no_pokemon,
                 onPokemonClick = onPokemonClick,
-                onBottomReach = { viewModel.getNextPokemonPage() },
-                modifier = Modifier.padding(contentPadding)
+                onBottomReach = { viewModel.getNextPokemonPage() }
             )
         }
     }
@@ -72,9 +90,12 @@ fun PokemonListScreen(
 @Composable
 fun PokemonListContent(
     loading: Boolean,
-    error: Boolean,
     lastPage: Boolean,
     pokemons: List<Pokemon>,
+    @StringRes noPokemonLabelRes: Int,
+    @DrawableRes noPokemonLogoRes: Int,
+    @StringRes errorLabelRes: Int?,
+    @DrawableRes errorLogoRes: Int,
     onBottomReach: () -> Unit,
     onPokemonClick: (Pokemon) -> Unit,
     modifier: Modifier = Modifier
@@ -82,18 +103,21 @@ fun PokemonListContent(
     LoadingContent(
         loading = loading,
         empty = pokemons.isEmpty(),
-        error = error,
-        emptyContent = { PokemonListEmptyContent() },
+        error = errorLabelRes != null && errorLabelRes > 0,
+        emptyContent = { PokemonListEmptyContent(noPokemonLabelRes, noPokemonLogoRes, modifier) },
         errorContent = {
-            ErrorRetryContent {
+            ErrorRetryContent(
+                errorLabelRes = errorLabelRes!!,
+                errorLogoRes = errorLogoRes
+            ) {
                 onBottomReach()
             }
         },
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     ) {
         PokemonPagingList(
             loading = loading,
-            error = error,
+            error = errorLabelRes != null && errorLabelRes > 0,
             lastPage = lastPage,
             pokemons = pokemons,
             onPokemonClick = onPokemonClick,
@@ -143,7 +167,8 @@ fun PokemonPagingList(
     val reachBottom by remember {
         derivedStateOf {
             val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-            val pokemonCount = listState.layoutInfo.totalItemsCount - 1 // subtract the last item for LoadingItem or RetryItem
+            val pokemonCount =
+                listState.layoutInfo.totalItemsCount - 1 // subtract the last item for LoadingItem or RetryItem
 
             lastVisibleIndex == pokemonCount - 1
         }
@@ -152,7 +177,7 @@ fun PokemonPagingList(
     LazyColumn(
         state = listState,
         contentPadding = PaddingValues(16.dp),
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
     ) {
         items(pokemons) { pokemon ->
             PokemonItem(pokemon = pokemon, onPokemonClick = onPokemonClick)
@@ -195,20 +220,18 @@ fun PokemonItem(pokemon: Pokemon, onPokemonClick: (Pokemon) -> Unit) {
             .fillMaxWidth()
             .aspectRatio(5f / 2f)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.BottomCenter)
-                .padding(top = 32.dp)
-                .shadow(8.dp, RoundedCornerShape(8.dp))
-                .clip(RoundedCornerShape(8.dp))
-                .drawBehind {
-                    drawRect(cardColorState.dominantColors.color)
-                }
-                .clickable {
-                    onPokemonClick(pokemon)
-                }
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .align(Alignment.BottomCenter)
+            .padding(top = 32.dp)
+            .shadow(8.dp, RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(8.dp))
+            .drawBehind {
+                drawRect(cardColorState.dominantColors.color)
+            }
+            .clickable {
+                onPokemonClick(pokemon)
+            }) {
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -228,12 +251,9 @@ fun PokemonItem(pokemon: Pokemon, onPokemonClick: (Pokemon) -> Unit) {
             }
         }
         AsyncImage(
-            modifier = Modifier
-                .align(Alignment.TopEnd),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(pokemon.imageUrl)
-                .crossfade(true)
-                .build(),
+            modifier = Modifier.align(Alignment.TopEnd),
+            model = ImageRequest.Builder(LocalContext.current).data(pokemon.imageUrl)
+                .crossfade(true).build(),
             contentDescription = pokemon.name
         )
     }
@@ -255,11 +275,10 @@ fun LoadingItem() {
 @Composable
 fun RetryItem(onRetryClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth()) {
-        Icon(
-            Icons.Outlined.Refresh,
+        Icon(Icons.Outlined.Refresh,
             "Retry",
             modifier = Modifier
-                .padding(top = 16.dp)
+                .padding(vertical = 16.dp)
                 .size(24.dp)
                 .align(Alignment.Center)
                 .clickable {
@@ -269,34 +288,166 @@ fun RetryItem(onRetryClick: () -> Unit) {
 }
 
 @Composable
-fun PokemonListEmptyContent() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text("No pokemons found")
+fun PokemonListEmptyContent(
+    @StringRes emptyPokemonLabelRes: Int,
+    @DrawableRes emptyLogoRes: Int,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(painter = painterResource(id = emptyLogoRes), contentDescription = null)
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(stringResource(id = emptyPokemonLabelRes))
     }
 }
 
 @Composable
 fun RetryButton(modifier: Modifier = Modifier, onRetryClick: () -> Unit) {
-    Icon(
-        Icons.Outlined.Refresh,
-        "Retry",
-        modifier = modifier
-            .clickable {
-                onRetryClick()
-            })
+    Icon(Icons.Outlined.Refresh, "Retry", modifier = modifier.clickable {
+        onRetryClick()
+    })
 }
 
 @Composable
-fun ErrorRetryContent(modifier: Modifier = Modifier, onRetryClick: () -> Unit) {
-    Box(modifier = modifier.fillMaxSize()) {
+fun ErrorRetryContent(
+    @StringRes errorLabelRes: Int,
+    @DrawableRes errorLogoRes: Int,
+    modifier: Modifier = Modifier,
+    onRetryClick: () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(painter = painterResource(id = errorLogoRes), contentDescription = null)
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(stringResource(id = errorLabelRes))
+        Spacer(modifier = Modifier.size(16.dp))
         RetryButton(
             modifier = Modifier
                 .padding(top = 16.dp)
                 .size(24.dp)
-                .align(Alignment.Center)
         ) {
             onRetryClick()
         }
+    }
+}
+
+// ========================
+// Previews
+// ========================
+@Preview(showBackground = true)
+@Composable
+fun PokemonListContentPreview() {
+    PokedexTheme {
+        PokemonListContent(loading = false,
+            lastPage = false,
+            pokemons = listOf(
+                Pokemon(1, "Bulbasaur", "http://test-url.com/1"),
+                Pokemon(2, "Ivysaur", "http://test-url.com/2"),
+                Pokemon(3, "Venasaur", "http://test-url.com/3"),
+            ),
+            noPokemonLabelRes = R.string.no_pokemons,
+            noPokemonLogoRes = R.drawable.logo_no_pokemon,
+            errorLabelRes = R.string.loading_pokemons_error,
+            errorLogoRes = R.drawable.logo_no_pokemon,
+            onBottomReach = { },
+            onPokemonClick = { })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokemonListContentLastPagePreview() {
+    PokedexTheme {
+        PokemonListContent(loading = false,
+            lastPage = true,
+            pokemons = listOf(
+                Pokemon(1, "Bulbasaur", "http://test-url.com/1"),
+                Pokemon(2, "Ivysaur", "http://test-url.com/2"),
+                Pokemon(3, "Venasaur", "http://test-url.com/3"),
+            ),
+            noPokemonLabelRes = R.string.no_pokemons,
+            noPokemonLogoRes = R.drawable.logo_no_pokemon,
+            errorLabelRes = R.string.loading_pokemons_error,
+            errorLogoRes = R.drawable.logo_no_pokemon,
+            onBottomReach = { },
+            onPokemonClick = { })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokemonListContentErrorPreview() {
+    PokedexTheme {
+        PokemonListContent(loading = false,
+            lastPage = false,
+            pokemons = listOf(
+                Pokemon(1, "Bulbasaur", "http://test-url.com/1"),
+                Pokemon(2, "Ivysaur", "http://test-url.com/2"),
+                Pokemon(3, "Venasaur", "http://test-url.com/3"),
+            ),
+            noPokemonLabelRes = R.string.no_pokemons,
+            noPokemonLogoRes = R.drawable.logo_no_pokemon,
+            errorLabelRes = R.string.loading_pokemons_error,
+            errorLogoRes = R.drawable.logo_no_pokemon,
+            onBottomReach = { },
+            onPokemonClick = { })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokemonListContentEmptyWithErrorPreview() {
+    PokedexTheme {
+        PokemonListContent(loading = false,
+            lastPage = false,
+            pokemons = emptyList(),
+            noPokemonLabelRes = R.string.no_pokemons,
+            noPokemonLogoRes = R.drawable.logo_no_pokemon,
+            errorLabelRes = R.string.loading_pokemons_error,
+            errorLogoRes = R.drawable.logo_no_pokemon,
+            onBottomReach = { },
+            onPokemonClick = { })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokemonListContentEmptyPreview() {
+    PokedexTheme {
+        PokemonListContent(loading = false,
+            lastPage = true,
+            pokemons = emptyList(),
+            noPokemonLabelRes = R.string.no_pokemons,
+            noPokemonLogoRes = R.drawable.logo_no_pokemon,
+            errorLabelRes = R.string.loading_pokemons_error,
+            errorLogoRes = R.drawable.logo_no_pokemon,
+            onBottomReach = { },
+            onPokemonClick = { })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PokemonListEmptyContentPreview() {
+    PokedexTheme {
+        PokemonListEmptyContent(R.string.no_pokemons, R.drawable.logo_no_pokemon, Modifier)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorRetryContentPreview() {
+    PokedexTheme {
+        ErrorRetryContent(
+            errorLabelRes = R.string.loading_pokemons_error,
+            errorLogoRes = R.drawable.logo_no_pokemon,
+            onRetryClick = { })
     }
 }
 
@@ -304,9 +455,14 @@ fun ErrorRetryContent(modifier: Modifier = Modifier, onRetryClick: () -> Unit) {
 @Composable
 fun PokemonListItemPreview() {
     PokedexTheme {
-        PokemonItem(
-            pokemon = Pokemon(1, "Pikachu", ""),
-            onPokemonClick = { }
-        )
+        PokemonItem(pokemon = Pokemon(25, "Pikachu", ""), onPokemonClick = { })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RetryItemPreview() {
+    PokedexTheme {
+        RetryItem(onRetryClick = { })
     }
 }

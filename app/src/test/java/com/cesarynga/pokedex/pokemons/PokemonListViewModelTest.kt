@@ -18,12 +18,12 @@ class PokemonListViewModelTest {
     private lateinit var pokemonListViewModel: PokemonListViewModel
     private lateinit var getPokemonListUseCase: GetPokemonListUseCase
     private lateinit var fakePokemonRepository: FakePokemonRepository
-    private val pokemon1 = PokemonModel(1, "pokemon1", "https://pokeapi.co/api/v2/pokemon/1")
-    private val pokemon2 = PokemonModel(2, "pokemon2", "https://pokeapi.co/api/v2/pokemon/2")
-    private val pokemon3 = PokemonModel(3, "pokemon3", "https://pokeapi.co/api/v2/pokemon/3")
-    private val pokemon4 = PokemonModel(4, "pokemon1", "https://pokeapi.co/api/v2/pokemon/4")
-    private val pokemon5 = PokemonModel(5, "pokemon2", "https://pokeapi.co/api/v2/pokemon/5")
-    private val pokemon6 = PokemonModel(6, "pokemon3", "https://pokeapi.co/api/v2/pokemon/6")
+    private val pokemon1 = PokemonModel(1, "pokemon1", "https://pokeapi.com/api/v2/pokemon/1")
+    private val pokemon2 = PokemonModel(2, "pokemon2", "https://pokeapi.com/api/v2/pokemon/2")
+    private val pokemon3 = PokemonModel(3, "pokemon3", "https://pokeapi.com/api/v2/pokemon/3")
+    private val pokemon4 = PokemonModel(4, "pokemon1", "https://pokeapi.com/api/v2/pokemon/4")
+    private val pokemon5 = PokemonModel(5, "pokemon2", "https://pokeapi.com/api/v2/pokemon/5")
+    private val pokemon6 = PokemonModel(6, "pokemon3", "https://pokeapi.com/api/v2/pokemon/6")
     private val pokemonListPage1 = listOf(pokemon1, pokemon2, pokemon3)
     private val pokemonListPage2 = listOf(pokemon4, pokemon5, pokemon6)
 

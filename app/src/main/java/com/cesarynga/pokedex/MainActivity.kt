@@ -18,9 +18,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PokedexTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
-                    AppNavigation()
-                }
+                AppNavigation()
             }
         }
     }

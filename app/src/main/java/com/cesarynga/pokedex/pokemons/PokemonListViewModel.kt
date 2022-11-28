@@ -1,7 +1,9 @@
 package com.cesarynga.pokedex.pokemons
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cesarynga.pokedex.R
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,8 +12,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
-class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseCase) : ViewModel() {
+private const val TAG = "PokemonListViewModel"
 
+class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseCase) : ViewModel() {
     private val _uiState = MutableStateFlow(PokemonListUiState())
     val uiState: StateFlow<PokemonListUiState> = _uiState
 
@@ -28,7 +31,8 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
             getPokemonListUseCase(offset)
                 .onStart { emitUiState(items = uiState.value.pokemons, isLoading = true) }
                 .catch {
-                    emitUiState(items = uiState.value.pokemons, userMessage = it.localizedMessage, isLoading = false)
+                    Log.e(TAG, "Error while loading pokemon page with offset $offset", it)
+                    emitUiState(items = uiState.value.pokemons, userMessage = R.string.loading_pokemons_error, isLoading = false)
                 }
                 .collect {
                     emitUiState(items = uiState.value.pokemons + it.results, isLoading = false, isLastPage = !it.hasNext)
@@ -40,7 +44,7 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
         items: List<Pokemon> = emptyList(),
         isLoading: Boolean = false,
         isLastPage: Boolean = false,
-        userMessage: String? = null
+        userMessage: Int? = null
     ) {
         val uiState = PokemonListUiState(items, isLoading, isLastPage, userMessage)
         this._uiState.value = uiState
@@ -51,5 +55,5 @@ data class PokemonListUiState(
     val pokemons: List<Pokemon> = emptyList(),
     val isLoading: Boolean = false,
     val isLastPage: Boolean = false,
-    val userMessage: String? = null
+    val userMessage: Int? = null
 )
