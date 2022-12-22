@@ -3,5 +3,6 @@
 
     <string name="no_pokemons">There are no pokemons</string>
     <string name="loading_pokemons_error">Error while loading pokemons</string>
+    <string name="loading_pokemon_error">Error while loading pokemon</string>
     <string name="retry">Retry</string>
 </resources>

@@ -35,14 +35,14 @@ import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import com.cesarynga.pokedex.ui.theme.PokedexTheme
 import com.cesarynga.pokedex.util.DominantColors
 import com.cesarynga.pokedex.util.rememberDominantColorState
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun PokemonListScreen(
     onPokemonClick: (Pokemon) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: PokemonListViewModel = getViewModel()
+    viewModel: PokemonListViewModel = koinViewModel()
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -61,32 +61,22 @@ fun PokemonListScreen(
     ) { contentPadding ->
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-        Column(modifier = Modifier.padding(contentPadding)) {
-            var text by remember {
-                mutableStateOf("")
-            }
-
-            TextField(
-                modifier= Modifier.fillMaxWidth(),
-                value = text,
-                placeholder = { Text(text = "Search") },
-                onValueChange = { text = it })
-
-            PokemonListContent(
-                loading = uiState.isLoading,
-                lastPage = uiState.isLastPage,
-                pokemons = uiState.pokemons,
-                noPokemonLabelRes = R.string.no_pokemons,
-                noPokemonLogoRes = R.drawable.logo_no_pokemon,
-                errorLabelRes = uiState.userMessage,
-                errorLogoRes = R.drawable.logo_no_pokemon,
-                onPokemonClick = onPokemonClick,
-                onBottomReach = { viewModel.getNextPokemonPage() }
-            )
-        }
+        PokemonListContent(
+            modifier = Modifier.padding(contentPadding),
+            loading = uiState.isLoading,
+            lastPage = uiState.isLastPage,
+            pokemons = uiState.pokemons,
+            noPokemonLabelRes = R.string.no_pokemons,
+            noPokemonLogoRes = R.drawable.logo_no_pokemon,
+            errorLabelRes = uiState.userMessage,
+            errorLogoRes = R.drawable.logo_no_pokemon,
+            onPokemonClick = onPokemonClick,
+            onBottomReach = { viewModel.getNextPokemonPage() }
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListContent(
     loading: Boolean,
@@ -115,15 +105,27 @@ fun PokemonListContent(
         },
         modifier = modifier.fillMaxSize()
     ) {
-        PokemonPagingList(
-            loading = loading,
-            error = errorLabelRes != null && errorLabelRes > 0,
-            lastPage = lastPage,
-            pokemons = pokemons,
-            onPokemonClick = onPokemonClick,
-            onBottomReach = onBottomReach,
-            modifier = modifier
-        )
+        Column() {
+            var text by remember {
+                mutableStateOf("")
+            }
+
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = text,
+                placeholder = { Text(text = "Search") },
+                onValueChange = { text = it })
+
+            PokemonPagingList(
+                loading = loading,
+                error = errorLabelRes != null && errorLabelRes > 0,
+                lastPage = lastPage,
+                pokemons = pokemons,
+                onPokemonClick = onPokemonClick,
+                onBottomReach = onBottomReach,
+                modifier = modifier
+            )
+        }
     }
 }
 

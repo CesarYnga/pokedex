@@ -63,7 +63,7 @@ dependencies {
     implementation Libs.AndroidX.palette
     implementation Libs.material3
 
-    implementation Libs.AndroidX.Compose.ui
+    implementation Libs.AndroidX.Compose.uiToolingPreview
     debugImplementation Libs.AndroidX.Compose.uiTooling
     implementation Libs.AndroidX.Compose.Material3.material3
     implementation Libs.AndroidX.Lifecycle.runtimeCompose

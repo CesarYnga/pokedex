@@ -5,7 +5,7 @@ sealed class AppScreen(val name: String) {
         val ROUTE = "$name"
     }
 
-    object PokemonDetailsScreen : AppScreen("pokemon_details") {
+    object PokemonDetailScreen : AppScreen("pokemon_details") {
         val ROUTE = "$name/{${Args.POKEMON_ID}}"
         object Args {
             const val POKEMON_ID = "pokemonId"

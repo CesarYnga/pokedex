@@ -9,7 +9,8 @@ import com.cesarynga.pokedex.data.source.local.PokemonLocalDataSourceImpl
 import com.cesarynga.pokedex.data.source.remote.PokemonApi
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSourceImpl
-import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonById
+import com.cesarynga.pokedex.pokemondetail.PokemonDetailsViewModel
+import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonByIdUseCase
 import com.cesarynga.pokedex.pokemons.PokemonListViewModel
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
 import okhttp3.OkHttpClient
@@ -26,10 +27,12 @@ val appModule = module {
     // View models
     viewModel { PokemonListViewModel(get()) }
 
+    viewModel { PokemonDetailsViewModel(get(), get()) }
+
     // Use cases
     factory { GetPokemonListUseCase(get()) }
 
-    factory { GetPokemonById(get()) }
+    factory { GetPokemonByIdUseCase(get()) }
 
     // Repositories
     single<PokemonRepository> {

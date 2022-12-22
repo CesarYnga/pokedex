@@ -38,26 +38,16 @@ object Libs {
         }
 
         object Compose {
-            const val version = "1.3.0"
+            const val version = "1.3.1"
 
-            const val ui = "androidx.compose.ui:ui:$version"
-            const val foundation = "androidx.compose.foundation:foundation:$version"
-            const val layout = "androidx.compose.foundation:foundation-layout:$version"
-            const val material = "androidx.compose.material:material:$version"
-            const val materialIconsExtended = "androidx.compose.material:material-icons-extended:$version"
-            const val runtime = "androidx.compose.runtime:runtime:$version"
-            const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
             const val uiTooling = "androidx.compose.ui:ui-tooling:$version"
             const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
             const val test = "androidx.compose.ui:ui-test:$version"
             const val uiTest = "androidx.compose.ui:ui-test-junit4:$version"
-            const val uiText = "androidx.compose.ui:ui-text-google-fonts:$version"
             const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:$version"
-            const val uiUtil = "androidx.compose.ui:ui-util:${version}"
-            const val viewBinding = "androidx.compose.ui:ui-viewbinding:$version"
 
             object Material3 {
-                private const val version = "1.0.0"
+                private const val version = "1.0.1"
 
                 const val material3 = "androidx.compose.material3:material3:$version"
             }
@@ -124,7 +114,7 @@ object Libs {
     }
 
     object Koin {
-        private const val version = "3.2.2"
+        private const val version = "3.3.0"
         const val androidXCompose = "io.insert-koin:koin-androidx-compose:$version"
     }
 }
