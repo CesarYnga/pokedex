@@ -13,6 +13,7 @@ import com.cesarynga.pokedex.pokemondetail.PokemonDetailsViewModel
 import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonByIdUseCase
 import com.cesarynga.pokedex.pokemons.PokemonListViewModel
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
+import com.cesarynga.pokedex.pokemons.domain.usecase.ObservePokemosUseCase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -25,11 +26,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 val appModule = module {
 
     // View models
-    viewModel { PokemonListViewModel(get()) }
+    viewModel { PokemonListViewModel(get(), get()) }
 
     viewModel { PokemonDetailsViewModel(get(), get()) }
 
     // Use cases
+    factory { ObservePokemosUseCase(get()) }
+
     factory { GetPokemonListUseCase(get()) }
 
     factory { GetPokemonByIdUseCase(get()) }

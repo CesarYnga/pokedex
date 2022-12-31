@@ -66,7 +66,7 @@ class PokemonListViewModelTest {
 
             assertThat(pokemonListViewModel.uiState.first().isLoading).isFalse()
             assertThat(pokemonListViewModel.uiState.first().pokemons).isEmpty()
-            assertThat(pokemonListViewModel.uiState.first().userMessage).isNotEmpty()
+            assertThat(pokemonListViewModel.uiState.first().errorMessage).isNotNull()
         }
 
     @Test
@@ -80,6 +80,6 @@ class PokemonListViewModelTest {
 
             assertThat(pokemonListViewModel.uiState.first().isLoading).isFalse()
             assertThat(pokemonListViewModel.uiState.first().pokemons.size).isEqualTo(pokemonListPage1.size)
-            assertThat(pokemonListViewModel.uiState.first().userMessage).isNotEmpty()
+            assertThat(pokemonListViewModel.uiState.first().errorMessage).isNotNull()
         }
 }

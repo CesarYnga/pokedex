@@ -68,7 +68,7 @@ fun PokemonListScreen(
             pokemons = uiState.pokemons,
             noPokemonLabelRes = R.string.no_pokemons,
             noPokemonLogoRes = R.drawable.logo_no_pokemon,
-            errorLabelRes = uiState.userMessage,
+            errorLabelRes = uiState.errorMessage,
             errorLogoRes = R.drawable.logo_no_pokemon,
             onPokemonClick = onPokemonClick,
             onBottomReach = { viewModel.getNextPokemonPage() }
@@ -106,15 +106,15 @@ fun PokemonListContent(
         modifier = modifier.fillMaxSize()
     ) {
         Column() {
-            var text by remember {
-                mutableStateOf("")
-            }
-
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = text,
-                placeholder = { Text(text = "Search") },
-                onValueChange = { text = it })
+//            var text by remember {
+//                mutableStateOf("")
+//            }
+//
+//            TextField(
+//                modifier = Modifier.fillMaxWidth(),
+//                value = text,
+//                placeholder = { Text(text = "Search") },
+//                onValueChange = { text = it })
 
             PokemonPagingList(
                 loading = loading,

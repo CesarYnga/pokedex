@@ -1,13 +1,11 @@
-import com.cesarynga.pokedex.buildsrc.Libs
-
 buildscript {
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath Libs.androidGradlePlugin
-        classpath Libs.Kotlin.gradlePlugin
+        classpath libs.android.gradle.plugin
+        classpath libs.kotlin.gradle.plugin
     }
 }
 
