@@ -19,6 +19,7 @@ kotlinx-coroutines = "1.6.4"
 okhttp = "4.10.0"
 retrofit = "2.9.0"
 robolectric = "4.9"
+timber = "5.0.1"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
@@ -49,6 +50,7 @@ okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+timber = { module = "com.jakewharton.timber:timber" , version.ref = "timber"}
 
 [bundles]
 androidx-compose = ["androidx-compose-ui-tooling-preview", "androidx-compose-material3", "androidx-lifecycle-runtime-compose"]

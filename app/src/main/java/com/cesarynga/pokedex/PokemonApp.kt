@@ -9,6 +9,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import timber.log.Timber
+import timber.log.Timber.DebugTree
 
 class PokemonApp : Application(), ImageLoaderFactory {
 
@@ -23,11 +25,20 @@ class PokemonApp : Application(), ImageLoaderFactory {
             // use modules
             modules(appModule)
         }
+
+        setUpTimber()
     }
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
             .logger(if (BuildConfig.DEBUG) DebugLogger() else null)
             .build()
+    }
+
+    private fun setUpTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(DebugTree())
+        }
+        // TODO: Set up Timber for release
     }
 }

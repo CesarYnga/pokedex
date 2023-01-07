@@ -1,23 +1,26 @@
 package com.cesarynga.pokedex.pokemons
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cesarynga.pokedex.R
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
-import com.cesarynga.pokedex.pokemons.domain.usecase.ObservePokemosUseCase
+import com.cesarynga.pokedex.pokemons.domain.usecase.ObserveLocalPokemosUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-
-private const val TAG = "PokemonListViewModel"
+import timber.log.Timber
 
 class PokemonListViewModel(
-    private val observePokemosUseCase: ObservePokemosUseCase,
+    observeLocalPokemosUseCase: ObserveLocalPokemosUseCase,
     private val getPokemonListUseCase: GetPokemonListUseCase
 ) : ViewModel() {
 
-    private val pokemons = observePokemosUseCase()
+    private val pokemons = observeLocalPokemosUseCase().onEach { localPokemons ->
+        localPokemons.ifEmpty {
+            // Get Pokemons from network
+            getPokemonPage(0)
+        }
+    }
 
     private val isLoading = MutableStateFlow(false)
     private val isLastPage = MutableStateFlow(false)
@@ -39,7 +42,7 @@ class PokemonListViewModel(
                     errorMessage = null
                 )
             }.catch { throwable ->
-                Log.e(TAG, "Error in a state flow", throwable)
+                Timber.e(throwable, "Error in a state flow")
             }.collect {
                 _uiState.value = it
             }
@@ -55,7 +58,7 @@ class PokemonListViewModel(
             getPokemonListUseCase(offset)
                 .onStart { isLoading.value = true }
                 .catch { throwable ->
-                    Log.e(TAG, "Error while loading pokemon page with offset $offset", throwable)
+                    Timber.e(throwable, "Error while loading pokemon page with offset $offset")
                     isLoading.value = false
                     errorMessage.value = R.string.loading_pokemons_error
                 }
