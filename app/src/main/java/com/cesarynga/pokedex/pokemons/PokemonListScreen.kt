@@ -93,7 +93,7 @@ fun PokemonListContent(
     LoadingContent(
         loading = loading,
         empty = pokemons.isEmpty(),
-        error = errorLabelRes != null && errorLabelRes > 0,
+        error = errorLabelRes != null,
         emptyContent = { PokemonListEmptyContent(noPokemonLabelRes, noPokemonLogoRes, modifier) },
         errorContent = {
             ErrorRetryContent(
@@ -118,7 +118,7 @@ fun PokemonListContent(
 
             PokemonPagingList(
                 loading = loading,
-                error = errorLabelRes != null && errorLabelRes > 0,
+                error = errorLabelRes != null,
                 lastPage = lastPage,
                 pokemons = pokemons,
                 onPokemonClick = onPokemonClick,

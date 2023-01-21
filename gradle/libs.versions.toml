@@ -1,5 +1,5 @@
 [versions]
-android-gradle-plugin = "7.3.1"
+android-gradle-plugin = "7.4.0"
 androidx-arch = "2.1.0"
 androidx-compose-bom = "2022.12.00"
 androidx-core-ktx = "1.9.0"

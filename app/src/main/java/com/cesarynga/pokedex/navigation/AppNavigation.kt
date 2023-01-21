@@ -17,8 +17,6 @@ fun AppNavigation(
     navController: NavHostController = rememberNavController(),
     startDestination: String = AppScreen.PokemonListScreen.ROUTE
 ) {
-
-
     NavHost(
         navController = navController,
         startDestination = startDestination,
