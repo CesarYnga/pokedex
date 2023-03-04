@@ -1,4 +1,4 @@
-package com.cesarynga.pokedex.data.source.remote
+package com.cesarynga.pokedex.data.source.remote.response
 
 import com.cesarynga.pokedex.data.source.PokemonPageModel
 

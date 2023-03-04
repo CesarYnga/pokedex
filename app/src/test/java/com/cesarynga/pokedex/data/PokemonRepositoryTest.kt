@@ -4,7 +4,6 @@ import com.cesarynga.pokedex.MainCoroutineRule
 import com.cesarynga.pokedex.data.source.PokemonModel
 import com.cesarynga.pokedex.data.source.local.FakePokemonLocalDataSource
 import com.cesarynga.pokedex.data.source.remote.FakePokemonRemoteDataSource
-import com.cesarynga.pokedex.data.source.remote.PokemonResponse
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch

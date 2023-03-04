@@ -1,3 +1,3 @@
-package com.cesarynga.pokedex.data.source
+package com.cesarynga.pokedex.pokemons.domain.model
 
-data class PokemonTypeModel(val id: Int, val name: String)
+data class PokemonType(val id: Int, val name: String)

@@ -8,17 +8,21 @@ import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 data class PokemonModel(
     val id: Int,
     val name: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val types: List<PokemonTypeModel>
 ) {
     fun toPokemon(): Pokemon {
         return Pokemon(
             id = id,
             name = name.capitalize(Locale.current),
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            types = types.map { pokemonTypeModel ->
+                pokemonTypeModel.toPokemonType()
+            }
         )
     }
 
-    fun toPokemonEntity() : PokemonEntity {
+    fun toPokemonEntity(): PokemonEntity {
         return PokemonEntity(
             id = id,
             name = name,

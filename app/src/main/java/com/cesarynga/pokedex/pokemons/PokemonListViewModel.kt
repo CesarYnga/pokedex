@@ -15,6 +15,7 @@ class PokemonListViewModel(
     private val getPokemonListUseCase: GetPokemonListUseCase
 ) : ViewModel() {
 
+    // Get pokemons from local data source as a single source of truth
     private val pokemons = observeLocalPokemosUseCase().onEach { localPokemons ->
         localPokemons.ifEmpty {
             // Get Pokemons from network
@@ -34,12 +35,12 @@ class PokemonListViewModel(
         viewModelScope.launch {
             // Combines the latest value from each of the flows, allowing us to generate a
             // view state instance which only contains the latest values.
-            combine(isLoading, isLastPage, pokemons) { isLoading, isLastPage, pokemons ->
+            combine(pokemons, isLoading, isLastPage, errorMessage) { pokemons, isLoading, isLastPage, errorMessage ->
                 PokemonListUiState(
                     pokemons = pokemons,
                     isLoading = isLoading,
                     isLastPage = isLastPage,
-                    errorMessage = null
+                    errorMessage = errorMessage
                 )
             }.catch { throwable ->
                 Timber.e(throwable, "Error in a state flow")

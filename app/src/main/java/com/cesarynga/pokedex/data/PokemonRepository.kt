@@ -10,5 +10,5 @@ interface PokemonRepository {
 
     fun getPokemonList(offset: Int): Flow<PokemonPageModel>
 
-    fun getPokemonById(pokemonId: Int): Flow<PokemonModel>
+    fun getPokemon(id: Int): Flow<PokemonModel>
 }

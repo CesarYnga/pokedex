@@ -10,7 +10,7 @@ import com.cesarynga.pokedex.data.source.remote.PokemonApi
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSource
 import com.cesarynga.pokedex.data.source.remote.PokemonRemoteDataSourceImpl
 import com.cesarynga.pokedex.pokemondetail.PokemonDetailsViewModel
-import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonByIdUseCase
+import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonUseCase
 import com.cesarynga.pokedex.pokemons.PokemonListViewModel
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
 import com.cesarynga.pokedex.pokemons.domain.usecase.ObserveLocalPokemosUseCase
@@ -36,7 +36,7 @@ val appModule = module {
 
     factory { GetPokemonListUseCase(get()) }
 
-    factory { GetPokemonByIdUseCase(get()) }
+    factory { GetPokemonUseCase(get()) }
 
     // Repositories
     single<PokemonRepository> {

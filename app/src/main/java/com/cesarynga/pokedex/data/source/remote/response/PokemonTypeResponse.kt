@@ -1,3 +1,3 @@
 package com.cesarynga.pokedex.data.source.remote.response
 
-data class PokemonTypeResponse()
+data class PokemonTypeResponse(val name: String, val url: String)

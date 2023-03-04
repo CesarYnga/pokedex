@@ -22,6 +22,6 @@ class PokemonRepositoryImpl(
         }
     }
 
-    override fun getPokemonById(pokemonId: Int): Flow<PokemonModel> =
-        pokemonLocalDataSource.getPokemonById(pokemonId)
+    override fun getPokemon(id: Int): Flow<PokemonModel> =
+        pokemonLocalDataSource.getPokemonById(id)
 }

@@ -3,50 +3,46 @@ package com.cesarynga.pokedex.pokemondetail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cesarynga.pokedex.R
 import com.cesarynga.pokedex.navigation.AppScreen
-import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonByIdUseCase
+import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonUseCase
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PokemonDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val getPokemonByIdUseCase: GetPokemonByIdUseCase,
+    getPokemonUseCase: GetPokemonUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PokemonDetailUiState())
-    val uiState: StateFlow<PokemonDetailUiState> = _uiState
+    private val isLoading = MutableStateFlow(false)
+    private val errorMessage: MutableStateFlow<Int?> = MutableStateFlow(null)
+    private val _uiState = MutableStateFlow(PokemonDetailUiState(isLoading = true))
+    val uiState: StateFlow<PokemonDetailUiState>
+        get() = _uiState
 
-    val pokemonId: Int = savedStateHandle[AppScreen.PokemonDetailScreen.Args.POKEMON_ID]!!
+    private val pokemonId: Int = savedStateHandle[AppScreen.PokemonDetailScreen.Args.POKEMON_ID]!!
+    private val pokemon = getPokemonUseCase(pokemonId)
 
     init {
         viewModelScope.launch {
-            getPokemonByIdUseCase(pokemonId)
-                .onStart { emitUiState(isLoading = true) }
-                .catch { emitUiState(isLoading = false, userMessage = R.string.loading_pokemon_error) }
-                .collect {
-                    emitUiState(pokemon = it, isLoading = false)
-                }
+            combine(pokemon, isLoading, errorMessage) { pokemon, isLoading, errorMessage ->
+                PokemonDetailUiState(
+                    pokemon = pokemon,
+                    isLoading = isLoading,
+                    errorMessage = errorMessage
+                )
+            }.catch { throwable ->
+                Timber.e(throwable, "Error in a state flow")
+            }.collect {
+                _uiState.value = it
+            }
         }
-
-    }
-
-    private fun emitUiState(
-        pokemon: Pokemon? = null,
-        isLoading: Boolean = false,
-        userMessage: Int? = null
-    ) {
-        val uiState = PokemonDetailUiState(pokemon, isLoading, userMessage)
-        this._uiState.value = uiState
     }
 }
 
 data class PokemonDetailUiState(
     val pokemon: Pokemon? = null,
     val isLoading: Boolean = false,
-    val userMessage: Int? = null
+    val errorMessage: Int? = null
 )
