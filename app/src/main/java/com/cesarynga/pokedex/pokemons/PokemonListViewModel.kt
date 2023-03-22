@@ -5,18 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.cesarynga.pokedex.R
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemonListUseCase
-import com.cesarynga.pokedex.pokemons.domain.usecase.ObserveLocalPokemosUseCase
+import com.cesarynga.pokedex.pokemons.domain.usecase.GetPokemosStreamUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PokemonListViewModel(
-    observeLocalPokemosUseCase: ObserveLocalPokemosUseCase,
+    getPokemosStreamUseCase: GetPokemosStreamUseCase,
     private val getPokemonListUseCase: GetPokemonListUseCase
 ) : ViewModel() {
 
     // Get pokemons from local data source as a single source of truth
-    private val pokemons = observeLocalPokemosUseCase().onEach { localPokemons ->
+    private val pokemons = getPokemosStreamUseCase().onEach { localPokemons ->
         localPokemons.ifEmpty {
             // Get Pokemons from network
             getPokemonPage(0)

@@ -2,7 +2,7 @@ package com.cesarynga.pokedex.data.source
 
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
-import com.cesarynga.pokedex.data.source.local.PokemonEntity
+import com.cesarynga.pokedex.data.source.local.db.entity.PokemonEntity
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 
 data class PokemonModel(

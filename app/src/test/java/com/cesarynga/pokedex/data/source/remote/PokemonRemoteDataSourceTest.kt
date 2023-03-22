@@ -1,6 +1,7 @@
 package com.cesarynga.pokedex.data.source.remote
 
 import com.cesarynga.pokedex.MainCoroutineRule
+import com.cesarynga.pokedex.data.source.remote.api.PokemonApi
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,6 +1,8 @@
 package com.cesarynga.pokedex.data.source.local
 
 import com.cesarynga.pokedex.data.source.PokemonModel
+import com.cesarynga.pokedex.data.source.local.db.PokemonDao
+import com.cesarynga.pokedex.data.source.local.db.entity.PokemonTypeCrossRef
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -10,27 +12,35 @@ import kotlinx.coroutines.withContext
 
 class PokemonLocalDataSourceImpl(
     private val pokemonDao: PokemonDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PokemonLocalDataSource {
 
-    override fun getAllPokemons(): Flow<List<PokemonModel>> {
-        return pokemonDao.getAllPokemons().map { list ->
+    override fun getPokemonsStream(): Flow<List<PokemonModel>> {
+        return pokemonDao.observePokemons().map { list ->
             list.map {
                 it.toPokemonModel()
             }
-        }.flowOn(ioDispatcher)
+        }.flowOn(defaultDispatcher)
     }
 
-    override fun getPokemonById(pokemonId: Int): Flow<PokemonModel> {
-        return pokemonDao.getPokemonById(pokemonId).map {
+    override fun getPokemonStream(pokemonId: Int): Flow<PokemonModel> {
+        return pokemonDao.observePokemonWithTypesById(pokemonId).map {
             it.toPokemonModel()
-        }.flowOn(ioDispatcher)
+        }.flowOn(defaultDispatcher)
     }
 
-    override suspend fun savePokemonList(pokemonList: List<PokemonModel>) =
-        withContext(ioDispatcher) {
-            pokemonDao.insertPokemons(*pokemonList.map {
+    override suspend fun savePokemon(vararg pokemon: PokemonModel) =
+        withContext(defaultDispatcher) {
+            pokemonDao.insertPokemon(*pokemon.map {
                 it.toPokemonEntity()
+            }.toTypedArray())
+        }
+
+    override suspend fun savePokemonDetail(pokemon: PokemonModel) =
+        withContext(defaultDispatcher) {
+            pokemonDao.insertPokemonType(*pokemon.types.map {
+                pokemonDao.insertPokemonTypeCrossRef(PokemonTypeCrossRef(pokemon.id, it.id))
+                it.toPokemonTypeEntity()
             }.toTypedArray())
         }
 }

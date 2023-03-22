@@ -1,4 +1,4 @@
-package com.cesarynga.pokedex.data.source.remote.response
+package com.cesarynga.pokedex.data.source.remote.api.response
 
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
@@ -8,7 +8,7 @@ data class PokemonResponse(
     val id: Int,
     val name: String,
     val url: String,
-    val types: List<PokemonTypeSlotResponse>
+    val types: List<PokemonTypeSlotResponse>?
 ) {
     fun toPokemonModel(): PokemonModel {
         val id = if(this.id > 0){
@@ -29,9 +29,9 @@ data class PokemonResponse(
             id = id,
             name = name.capitalize(Locale.current),
             imageUrl = imageUrl,
-            types = types.map { typeSlot ->
+            types = types?.map { typeSlot ->
                 typeSlot.toPokemonTypeModel()
-            }
+            } ?: emptyList()
         )
     }
 }

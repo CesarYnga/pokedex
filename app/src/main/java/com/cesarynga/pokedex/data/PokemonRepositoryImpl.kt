@@ -12,16 +12,23 @@ class PokemonRepositoryImpl(
     private val pokemonLocalDataSource: PokemonLocalDataSource
 ) : PokemonRepository {
 
-    override fun observePokemons(): Flow<List<PokemonModel>> {
-        return pokemonLocalDataSource.getAllPokemons()
+    override fun getPokemonsStream(): Flow<List<PokemonModel>> {
+        return pokemonLocalDataSource.getPokemonsStream()
     }
 
     override fun getPokemonList(offset: Int): Flow<PokemonPageModel> {
         return pokemonRemoteDataSource.getPokemonList(offset).onEach {
-            pokemonLocalDataSource.savePokemonList(it.results)
+            pokemonLocalDataSource.savePokemon(*it.results.toTypedArray())
         }
     }
 
-    override fun getPokemon(id: Int): Flow<PokemonModel> =
-        pokemonLocalDataSource.getPokemonById(id)
+    override fun getPokemonStream(pokemonId: Int): Flow<PokemonModel> {
+        return pokemonLocalDataSource.getPokemonStream(pokemonId)
+    }
+
+    override suspend fun getPokemon(pokemonId: Int): PokemonModel {
+        val pokemonModel = pokemonRemoteDataSource.getPokemon(pokemonId)
+        pokemonLocalDataSource.savePokemonDetail(pokemonModel)
+        return pokemonModel
+    }
 }

@@ -4,9 +4,11 @@ import com.cesarynga.pokedex.data.source.PokemonModel
 import kotlinx.coroutines.flow.Flow
 
 interface PokemonLocalDataSource {
-    fun getAllPokemons(): Flow<List<PokemonModel>>
+    fun getPokemonsStream(): Flow<List<PokemonModel>>
 
-    fun getPokemonById(pokemonId: Int): Flow<PokemonModel>
+    fun getPokemonStream(pokemonId: Int): Flow<PokemonModel>
 
-    suspend fun savePokemonList(pokemonList: List<PokemonModel>)
+    suspend fun savePokemon(vararg pokemon: PokemonModel)
+
+    suspend fun savePokemonDetail(pokemon: PokemonModel)
 }

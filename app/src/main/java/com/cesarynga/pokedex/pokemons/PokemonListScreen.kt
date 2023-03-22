@@ -26,18 +26,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.cesarynga.pokedex.R
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
+import com.cesarynga.pokedex.pokemons.domain.model.PokemonType
 import com.cesarynga.pokedex.ui.theme.PokedexTheme
 import com.cesarynga.pokedex.util.DominantColors
 import com.cesarynga.pokedex.util.rememberDominantColorState
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListScreen(
     onPokemonClick: (Pokemon) -> Unit,
@@ -76,7 +76,6 @@ fun PokemonListScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonListContent(
     loading: Boolean,
@@ -345,13 +344,14 @@ fun ErrorRetryContent(
 @Preview(showBackground = true)
 @Composable
 fun PokemonListContentPreview() {
+    val pokemonTypes = emptyList<PokemonType>()
     PokedexTheme {
         PokemonListContent(loading = false,
             lastPage = false,
             pokemons = listOf(
-                Pokemon(1, "Bulbasaur", "http://test-url.com/1"),
-                Pokemon(2, "Ivysaur", "http://test-url.com/2"),
-                Pokemon(3, "Venasaur", "http://test-url.com/3"),
+                Pokemon(1, "Bulbasaur", "http://test-url.com/1", pokemonTypes),
+                Pokemon(2, "Ivysaur", "http://test-url.com/2", pokemonTypes),
+                Pokemon(3, "Venasaur", "http://test-url.com/3", pokemonTypes),
             ),
             noPokemonLabelRes = R.string.no_pokemons,
             noPokemonLogoRes = R.drawable.logo_no_pokemon,
@@ -365,13 +365,14 @@ fun PokemonListContentPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PokemonListContentLastPagePreview() {
+    val pokemonTypes = emptyList<PokemonType>()
     PokedexTheme {
         PokemonListContent(loading = false,
             lastPage = true,
             pokemons = listOf(
-                Pokemon(1, "Bulbasaur", "http://test-url.com/1"),
-                Pokemon(2, "Ivysaur", "http://test-url.com/2"),
-                Pokemon(3, "Venasaur", "http://test-url.com/3"),
+                Pokemon(1, "Bulbasaur", "http://test-url.com/1", pokemonTypes),
+                Pokemon(2, "Ivysaur", "http://test-url.com/2", pokemonTypes),
+                Pokemon(3, "Venasaur", "http://test-url.com/3", pokemonTypes),
             ),
             noPokemonLabelRes = R.string.no_pokemons,
             noPokemonLogoRes = R.drawable.logo_no_pokemon,
@@ -385,13 +386,14 @@ fun PokemonListContentLastPagePreview() {
 @Preview(showBackground = true)
 @Composable
 fun PokemonListContentErrorPreview() {
+    val pokemonTypes = emptyList<PokemonType>()
     PokedexTheme {
         PokemonListContent(loading = false,
             lastPage = false,
             pokemons = listOf(
-                Pokemon(1, "Bulbasaur", "http://test-url.com/1"),
-                Pokemon(2, "Ivysaur", "http://test-url.com/2"),
-                Pokemon(3, "Venasaur", "http://test-url.com/3"),
+                Pokemon(1, "Bulbasaur", "http://test-url.com/1", pokemonTypes),
+                Pokemon(2, "Ivysaur", "http://test-url.com/2", pokemonTypes),
+                Pokemon(3, "Venasaur", "http://test-url.com/3", pokemonTypes),
             ),
             noPokemonLabelRes = R.string.no_pokemons,
             noPokemonLogoRes = R.drawable.logo_no_pokemon,
@@ -457,7 +459,7 @@ fun ErrorRetryContentPreview() {
 @Composable
 fun PokemonListItemPreview() {
     PokedexTheme {
-        PokemonItem(pokemon = Pokemon(25, "Pikachu", ""), onPokemonClick = { })
+        PokemonItem(pokemon = Pokemon(25, "Pikachu", "", emptyList()), onPokemonClick = { })
     }
 }
 

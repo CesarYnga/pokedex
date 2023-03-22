@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface PokemonRemoteDataSource {
     fun getPokemonList(offset: Int, pageSize: Int = PAGE_SIZE_DEFAULT): Flow<PokemonPageModel>
 
-    fun getPokemon(id: Int): Flow<PokemonModel>
+    suspend fun getPokemon(id: Int): PokemonModel
 
     companion object {
         private const val PAGE_SIZE_DEFAULT = 20

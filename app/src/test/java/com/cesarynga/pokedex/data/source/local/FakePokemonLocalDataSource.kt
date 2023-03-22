@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.flow
 class FakePokemonLocalDataSource(var pokemonList: MutableList<PokemonModel> = mutableListOf()) :
     PokemonLocalDataSource {
 
-    override fun getAllPokemons(): Flow<List<PokemonModel>> = flow {
+    override fun getPokemonsStream(): Flow<List<PokemonModel>> = flow {
         emit(pokemonList)
     }
 
-    override fun getPokemonById(pokemonId: Int): Flow<PokemonModel> = flow {
+    override fun getPokemonStream(pokemonId: Int): Flow<PokemonModel> = flow {
         val pokemonFound = pokemonList.find { it.id == pokemonId }
         if (pokemonFound != null) {
             emit(pokemonFound)
@@ -20,7 +20,7 @@ class FakePokemonLocalDataSource(var pokemonList: MutableList<PokemonModel> = mu
         }
     }
 
-    override suspend fun savePokemonList(pokemonList: List<PokemonModel>) {
+    override suspend fun savePokemon(pokemonList: List<PokemonModel>) {
         this.pokemonList.addAll(pokemonList)
     }
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cesarynga.pokedex.navigation.AppScreen
-import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonUseCase
+import com.cesarynga.pokedex.pokemondetail.domain.usecase.GetPokemonStreamUseCase
 import com.cesarynga.pokedex.pokemons.domain.model.Pokemon
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -12,7 +12,7 @@ import timber.log.Timber
 
 class PokemonDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    getPokemonUseCase: GetPokemonUseCase,
+    getPokemonStreamUseCase: GetPokemonStreamUseCase,
 ) : ViewModel() {
 
     private val isLoading = MutableStateFlow(false)
@@ -22,7 +22,7 @@ class PokemonDetailsViewModel(
         get() = _uiState
 
     private val pokemonId: Int = savedStateHandle[AppScreen.PokemonDetailScreen.Args.POKEMON_ID]!!
-    private val pokemon = getPokemonUseCase(pokemonId)
+    private val pokemon = getPokemonStreamUseCase(pokemonId)
 
     init {
         viewModelScope.launch {
@@ -33,7 +33,7 @@ class PokemonDetailsViewModel(
                     errorMessage = errorMessage
                 )
             }.catch { throwable ->
-                Timber.e(throwable, "Error in a state flow")
+                Timber.e(throwable, "Error getting pokemon with id = $pokemonId")
             }.collect {
                 _uiState.value = it
             }

@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.cesarynga.pokedex.MainCoroutineRule
 import com.cesarynga.pokedex.PokemonTestApp
 import com.cesarynga.pokedex.data.source.PokemonModel
+import com.cesarynga.pokedex.data.source.local.db.PokemonDatabase
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,9 +61,9 @@ class PokemonLocalDataSourceTest {
             val newPokemon2 = PokemonModel(55, "Pokemon 55", "http://test-url.com/55")
             val newPokemon3 = PokemonModel(100, "Pokemon 100", "http://test-url.com/100")
             val newPokemonList = listOf(newPokemon, newPokemon2, newPokemon3)
-            pokemonLocalDataSource.savePokemonList(newPokemonList)
+            pokemonLocalDataSource.savePokemon(newPokemonList)
 
-            val result = pokemonLocalDataSource.getAllPokemons().first()
+            val result = pokemonLocalDataSource.getPokemonsStream().first()
 
             assertThat(result.size).isEqualTo(newPokemonList.size)
             assertThat(result).isEqualTo(newPokemonList)

@@ -6,9 +6,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface PokemonRepository {
 
-    fun observePokemons(): Flow<List<PokemonModel>>
+    fun getPokemonsStream(): Flow<List<PokemonModel>>
 
     fun getPokemonList(offset: Int): Flow<PokemonPageModel>
 
-    fun getPokemon(id: Int): Flow<PokemonModel>
+    fun getPokemonStream(pokemonId: Int): Flow<PokemonModel>
+
+    suspend fun getPokemon(pokemonId: Int): PokemonModel
 }
